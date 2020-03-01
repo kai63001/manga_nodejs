@@ -1,9 +1,9 @@
 <div class="row">
     <% for( let i = 0; i < name.length; i++ ) { %>
         <div class="col-md-3 col-6" style="padding-right: 0px;">
-            <a href="" style="text-decoration: none;color: #130C11;">
+            <a href="manga<%= url[i].replace('/cumanga.com/manga-',''); %>" style="text-decoration: none;color: #130C11;">
                 <div class="card"
-                    style="background:url('<%= image[i] %>');background-size: cover;background-position: center;transition: 1s; height: 240px;width: 100%;border-radius: 4px;">
+                    style="background:url('<%= image[i] %>');background-size: cover;background-position: center;transition: 1s; height: 240px;width: 100%;border-radius: 4px;border:0px;">
                 </div>
                 <p style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                     <strong> <%= name[i] %> </strong><br>
