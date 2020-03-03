@@ -14,9 +14,25 @@
         .card:hover {
             background-size: 120% !important;
         }
-        .btn-outline-info:hover{
+
+        .btn-outline-info:hover {
             background-color: #1ba0e2 !important;
             color: white !important;
+        }
+
+        .boxep {
+            border: 2px solid #c9c9c9;
+            background-color: #c9c9c9;
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: #1b1b1b;
+        }
+
+        .boxep:hover {
+            transition: .5s;
+            border: 2px solid #ababab;
+            background-color: #ababab;
+            color: #1b1b1b;
         }
     </style>
 </head>
@@ -57,7 +73,8 @@
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit" style="border-color: #1ba0e2;color: #1ba0e2;">Search</button>
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit"
+                            style="border-color: #1ba0e2;color: #1ba0e2;">Search</button>
                     </form>
                 </div>
             </div>
@@ -70,17 +87,83 @@
                 <div class="col-md-7">
                     <div class="row">
                         <div class="col-md-4 col-4">
-                            <img src="/card.png"
+                            <img src="<%= image %>"
                                 style="border-radius: 4px;box-shadow:0 1px 3px 0 rgba(27,27,27,.1), 0 4px 8px 0 rgba(27,27,27,.1);"
                                 width="100%" alt="">
                         </div>
                         <div class="col-md-6 col-6">
-                            <h4>Moons Manga..</h4>
+                            <h1 id="warp">
+                                <p><%= title %> </p>
+                            </h1>
+                            <!-- <div id="paddingMobile"></div> -->
+                            <div id="mobileStat">
+                                <p> สถานะ : <%= status %> </p>
+                                <p> ปีที่ออก : <%= year %> </p>
+                                <% function formatNumber(num) {
+                                    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                                  } %>
+                                <p style="color: #1b1b1b;"> จำนวนคนอ่าน : <%= formatNumber(view) %> </p>
+                            </div>
+                            <a href="" class="btn btn-info" style="background-color: #1ba0e2;border-color: #1ba0e2;">
+                                อ่านตอนแรก
+                            </a>
+                            <a id="mobileWatch" href="" class="btn btn-info"
+                                style="background-color: #1ba0e2;border-color: #1ba0e2;">
+                                อ่านตอนล่าสุด </a>
+                            <!-- <p style="color: #1b1b1b;width: 600px;"> เรื่องย่อ : <%= des %> </p> -->
                         </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <br>
+        <div class="container" style="color: #1b1b1b;">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;">
+                        asdas
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;">
+                        <strong><b>เรื่องย่อ :</b></strong>
+                        <br>
+                        <%= des %>
+                        <% if (tags.length > 1) { %>
+                        <hr style="color: white;background-color: #1ba0e2;">
+                        <strong><b>หมวดหมู่ :</b></strong>
+                        <br>
+                        <% for( let i = 0; i < tags.length; i++ ) { %>
+                        <a href=""><span class="badge badge-info" style="background-color: #1ba0e2;"><%= tags[i] %>
+                            </span></a>
+                        <% } %>
+                        <% } %>
+
                     </div>
                 </div>
             </div>
         </div>
+        <br>
+        <div id="episode">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="" style="text-decoration: none;">
+                            <div class="boxep" style="">
+                                <center>กำลังโหลดข้อมูล</center>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
+        <script>
+
+        </script>
     </div>
 
     <br><br><br>
@@ -97,23 +180,35 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     <script>
-         var name = '<%= name %>';
-         var md = new MobileDetect(window.navigator.userAgent);
-         console.log(md.mobile());
-         if(md.mobile() != null){
-            $('#na').css('background','#1b1b1b');
-            $('#toTop').css('margin-top','40px');
-            $('#toTop').css('color','#1b1b1b');
-         }else{
-             $('#warp').css('white-space','nowrap');
-            $('#navbar').css('height','230px').css('background','#1b1b1b');
-
-         }
         $.ajax({
-            url: "/ajax/detail/onpage/"+name+'/', success: function (result) {
-                $("#toTop").html(result);
+            url: "/ajax/detail/ep/<%= name %>/", success: function (result) {
+                $("#episode").html(result);
             }
         });
+        var md = new MobileDetect(window.navigator.userAgent);
+        console.log(md.mobile());
+        if (md.mobile() != null) {
+            // $('#warp').css('white-space', 'nowrap').css('overflow', 'hidden').css('text-overflow', 'ellipsis');
+            $('#warp').css('width', screen.width - 150);
+            $('#mobileStat').hide();
+            $('#mobileWatch').css('margin-top', '15px');
+
+        } else {
+            $('#paddingMobile').css('padding-top', '20px');
+            $('#warp').css('white-space', 'nowrap');
+        }
+        var name = '<%= name %>';
+        console.log(md.mobile());
+        if (md.mobile() != null) {
+            $('#na').css('background', '#1b1b1b');
+            $('#toTop').css('margin-top', '40px');
+            $('#toTop').css('color', '#1b1b1b');
+        } else {
+            $('#warp').css('white-space', 'nowrap');
+            $('#navbar').css('height', '230px').css('background', '#1b1b1b');
+
+        }
+
         $.ajax({
             url: "/ajax/index/updateall", success: function (result) {
                 $("#updateall").html(result);

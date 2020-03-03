@@ -161,13 +161,9 @@
                     <p style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                         <strong> sadasdasd </strong><br>
                         <strong style="color: gray;"> asdasda </strong>
-
-
                     </p>
                 </a>
-
             </div>
-
         </div>
     </div>
     <% if (session.readedmanga_name.length > 0) { %>
@@ -178,7 +174,7 @@
         </div>
         <div style="clear:both;"></div>
         <div class="row">
-            <% for( let i = session.readedmanga_name.length -1; i > session.readedmanga_name.length -7; i-- ) { %>
+            <% for( let i = session.readedmanga_name.length -1; i > session.readedmanga_name.length -8; i-- ) { %>
             <% if (session.readedmanga_image[i]) { %>
             <div class="col-md-2" style="padding-right: 0px;">
                 <a href="manga/<%= session.readedmanga_url[i] %>" style="text-decoration: none;color: #130C11;">
@@ -191,8 +187,6 @@
                 </a>
             </div>
             <% } %>
-
-
             <% } %>
         </div>
     </div>

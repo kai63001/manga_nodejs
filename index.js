@@ -69,65 +69,212 @@ app.get('/', function (req, reser) {
     reser.render('index', { session: req.session });
 });
 
-app.get('/manga/:name', function (req, reser) {
-    reser.render('manga_detail', { name: req.params.name });
+app.get('/manga/:name', function (reqer, reser) {
+    var named = reqer.params.name;
+    var image = '';
+    var title = '';
+    var des = '';
+    var status = '';
+    var year = '';
+    var tags = [];
+    var view = 1;
+    con.query("select * from manga_detail where md_url = '" + reqer.params.name.toString() + "'", async function (err, resquert) {
+        if (resquert.length > 0) {
+            // reser.send('added');
+            image = resquert[0].md_image;
+            title = resquert[0].md_name;
+            des = resquert[0].md_des;
+            status = resquert[0].md_status;
+            year = resquert[0].md_year;
+            tags = resquert[0].md_tags.split(",");
+            view = parseInt(resquert[0].md_view) + 1;
+            con.query("update manga_detail set md_view = '" + view + "' where  md_url = '" + reqer.params.name.toString() + "'", async function (err, ressss) {
+
+            });
+            var mangareaded = reqer.session.readedmanga_name;
+            if (mangareaded == undefined) {
+                reqer.session.readedmanga_name = [];
+                reqer.session.readedmanga_image = [];
+                reqer.session.readedmanga_url = [];
+            }
+            if (reqer.session.readedmanga_name.indexOf(title) >= 0) {
+                var ii = reqer.session.readedmanga_name.indexOf(title);
+                console.log('runn');
+                reqer.session.readedmanga_name.splice(reqer.session.readedmanga_name.indexOf(title), 1);
+                reqer.session.readedmanga_image.splice(reqer.session.readedmanga_image.indexOf(image), 1);
+                reqer.session.readedmanga_url.splice(ii, 1);
+            }
+            if (reqer.session.readedmanga_name[reqer.session.readedmanga_name.length - 1] != title) {
+                reqer.session.readedmanga_name.push(title);
+                reqer.session.readedmanga_image.push(image);
+                reqer.session.readedmanga_url.push(named);
+
+            }
+            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+
+
+        } else {
+            try {
+                request('https://cumanga.com/manga-' + named + '/', async function (error, req, html) {
+                    if (!error & req.statusCode == 200) {
+                        try {
+                            var $ = cheerio.load(html);
+                            image = $(".doujin_post").attr("style").substr($(".doujin_post").attr("style").indexOf("('") + 2, $(".doujin_post").attr("style").length);
+                            image = image.replace("');", '');
+                            title = $("title").text().replace('อ่าน: ', '').replace(' | Read Manga: CuManga.com', '').trim();
+                            des = $(".text-light").eq(3).text();
+                            year = $(".text-light").eq(2).text();
+                            status = $(".text-light").eq(1).text();
+                            // console.log('https://www.anime-planet.com/manga/all?name='+title);
+                            var titleed = title.replace(/ /g, '+');
+
+                            request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
+                                if (!errorqqq & reqqq.statusCode == 200) {
+                                    try {
+                                        var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
+                                        htmled = htmled.substr(0, htmled.indexOf('myListBar'));
+                                        var $s = cheerio.load(htmled);
+                                        if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
+                                            $s('a').each(function (i, elem) {
+                                                tags[i] = $s(this).text().replace(/\n/g, '');
+                                            });
+                                            console.log(tags);
+                                            con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (err, res) {
+                                            });
+                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+
+                                        } else {
+                                            titleed = titleed.substr(0, titleed.length / 3);
+                                            request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
+                                                if (!errorqqq & reqqq.statusCode == 200) {
+                                                    var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
+                                                    htmled = htmled.substr(0, htmled.indexOf('myListBar'));
+                                                    var $s = cheerio.load(htmled);
+                                                    if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
+                                                        $s('a').each(function (i, elem) {
+                                                            tags[i] = $s(this).text().replace(/\n/g, '');
+                                                        });
+                                                        console.log('asdasdasdasdasdas');
+                                                        console.log(tags);
+                                                        con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
+                                                            if (sres) {
+                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+                                                            }
+                                                            if (serr) {
+                                                                console.log(serr);
+                                                            }
+                                                        });
+                                                    } else {
+                                                        console.log('asdasdasdasdasdas2');
+                                                        con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
+                                                            if (sres) {
+                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+                                                            }
+                                                            if (serr) {
+                                                                console.log(serr);
+                                                            }
+                                                        });
+
+
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    } catch (errorqqq) {
+                                        console.log(errorqqq);
+                                    }
+                                }
+                            });
+                            var mangareaded = reqer.session.readedmanga_name;
+                            if (mangareaded == undefined) {
+                                reqer.session.readedmanga_name = [];
+                                reqer.session.readedmanga_image = [];
+                                reqer.session.readedmanga_url = [];
+                            }
+                            if (reqer.session.readedmanga_name.indexOf(title) >= 0) {
+                                var ii = reqer.session.readedmanga_name.indexOf(title);
+                                console.log('runn');
+                                reqer.session.readedmanga_name.splice(reqer.session.readedmanga_name.indexOf(title), 1);
+                                reqer.session.readedmanga_image.splice(reqer.session.readedmanga_image.indexOf(image), 1);
+                                reqer.session.readedmanga_url.splice(ii, 1);
+                            }
+                            if (reqer.session.readedmanga_name[reqer.session.readedmanga_name.length - 1] != title) {
+                                reqer.session.readedmanga_name.push(title);
+                                reqer.session.readedmanga_image.push(image);
+                                reqer.session.readedmanga_url.push(named);
+
+                            }
+                            // reqer.session.destroy();
+                            // reqer.session = null;
+                            console.log(tags);
+
+
+
+
+                        } catch (error) {
+                            console.log(error);
+
+                        }
+
+
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+    });
+
+});
+
+app.get('/manga/:name/read/:ep',function(req,reser){
+    reser.send(req.params.name+'-'+req.params.ep);
 });
 
 
 // AJAX 
 
-app.get('/ajax/detail/onpage/:name', async function (reqer, reser) {
-    var named = reqer.params.name;
-    var image = '';
-    var title = '';
-    var des = '';
-    try {
-        request('https://cumanga.com/manga-' + named + '/', async function (error, req, html) {
-            if (!error & req.statusCode == 200) {
-                try {
-                    var $ = cheerio.load(html);
-                    image = $(".doujin_post").attr("style").substr($(".doujin_post").attr("style").indexOf("('") + 2, $(".doujin_post").attr("style").length);
-                    image = image.replace("');", '');
-                    title = $("title").text().replace('อ่าน: ', '').replace(' | Read Manga: CuManga.com', '').trim();
-                    des = $(".text-light").eq(3).text();
-                    var mangareaded = reqer.session.readedmanga_name;
-                    console.log(mangareaded);
-                    if (mangareaded == undefined) {
-                        reqer.session.readedmanga_name = [];
-                        reqer.session.readedmanga_image = [];
-                        reqer.session.readedmanga_url = [];
-                    }
-                    console.log(reqer.session.readedmanga_name.indexOf(title));
-                    if (reqer.session.readedmanga_name.indexOf(title) >= 0) {
-                        var ii = reqer.session.readedmanga_name.indexOf(title);
-                        console.log('runn');
-                        reqer.session.readedmanga_name.splice(reqer.session.readedmanga_name.indexOf(title), 1);
-                        reqer.session.readedmanga_image.splice(reqer.session.readedmanga_image.indexOf(image), 1);
-                        reqer.session.readedmanga_url.splice(ii, 1);
-                    }
-                    if (reqer.session.readedmanga_name[reqer.session.readedmanga_name.length - 1] != title) {
-                        reqer.session.readedmanga_name.push(title);
-                        reqer.session.readedmanga_image.push(image);
-                        reqer.session.readedmanga_url.push(named);
+app.get('/ajax/detail/ep/:name', async function (req, reser) {
+    var ep = [];
+    request('https://cumanga.com/manga-' + req.params.name + '/', async function (error, r, html) {
+        if (!error & r.statusCode == 200) {
+            var $ = cheerio.load(html);
+            var lastEp = parseInt($('.doujin_p_tag3').eq(0).children('span').text().replace('ตอนที่ ', '').trim());
+            var FristEp;
+            var countPage = $('select.form-control').eq(0).children('option').length;
+            var j = 0;
+            if (countPage > 1) {
+                request('https://cumanga.com/manga-' + req.params.name + '/page-' + countPage + '/', async function (error, req, html) {
+                    if (!error & req.statusCode == 200) {
+                        var $ = cheerio.load(html);
+                        FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
+                        console.log(countPage);
+                        for (var i = FristEp; i <= lastEp; i++) {
+                            
+                            ep[j] = i;
+                            j+=1
+                        }
+                        console.log(lastEp);
+                        console.log(ep);
 
-                    }
-                    // reqer.session.destroy();
-                    // reqer.session = null;
-                    console.log(reqer.session.readedmanga_name);
-                    reser.render('ajax/detail/onPage', { name: reqer.params.name, image: image, title: title, des: des });
+                        reser.render('ajax/detail/ep', { ep: ep });
+                    } 
+                });
+            }else{
+                FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
 
+                console.log(countPage);
+                        for (var i = FristEp; i <= lastEp; i++) {
+                            ep[j] = i;
+                            j+=1
 
-                } catch (error) {
-                    console.log(error);
-
-                }
-
-
+                        }
+                        console.log(lastEp);
+                        reser.render('ajax/detail/ep', { ep: ep });
             }
-        });
-    } catch (error) {
-        console.log(error);
-    }
+
+        }
+    });
 });
 
 app.get('/ajax/index/update', async function (req, reser) {
@@ -147,6 +294,7 @@ app.get('/ajax/index/update', async function (req, reser) {
                 ep[i] = $('.doujin_t_red').eq(i).text();
                 url[i] = $('.col-6').eq(i).attr("href");
             }
+
             console.log(name);
             reser.render('ajax/index/update', { name: name, image: image, ep: ep, url: url });
         } catch (error) {
