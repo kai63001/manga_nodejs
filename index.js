@@ -70,6 +70,18 @@ app.get('/', function (req, reser) {
 });
 
 app.get('/manga/:name', function (reqer, reser) {
+    if (reqer.session.watchep == undefined) {
+        reqer.session.watchep = {};
+    }
+    if (reqer.session.watchep[reqer.params.name.toString()] == undefined) {
+        reqer.session.watchep[reqer.params.name.toString()] = {};
+    }
+    if (reqer.session.watchep[reqer.params.name.toString()]["1"] == undefined) {
+        reqer.session.watchep[reqer.params.name.toString()]["1"] = {};
+    }
+    if (reqer.params.name.indexOf(' ') >= 0) {
+        reser.redirect('/manga/' + reqer.params.name.replace(/ /g, '-'));
+    }
     var named = reqer.params.name;
     var image = '';
     var title = '';
@@ -110,7 +122,7 @@ app.get('/manga/:name', function (reqer, reser) {
                 reqer.session.readedmanga_url.push(named);
 
             }
-            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
 
 
         } else {
@@ -141,7 +153,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                             console.log(tags);
                                             con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (err, res) {
                                             });
-                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
 
                                         } else {
                                             titleed = titleed.substr(0, titleed.length / 3);
@@ -158,7 +170,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                                         console.log(tags);
                                                         con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
                                                             if (sres) {
-                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
                                                             }
                                                             if (serr) {
                                                                 console.log(serr);
@@ -168,7 +180,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                                         console.log('asdasdasdasdasdas2');
                                                         con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
                                                             if (sres) {
-                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status });
+                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
                                                             }
                                                             if (serr) {
                                                                 console.log(serr);
@@ -227,50 +239,94 @@ app.get('/manga/:name', function (reqer, reser) {
 
 });
 
-app.get('/manga/:name/read/:ep',function(req,reser){
-    reser.send(req.params.name+'-'+req.params.ep);
+app.get('/manga/:name/read/:ep', function (reqer, reser) {
+    name = reqer.params.name;
+    ep = reqer.params.ep;
+    var image = [];
+    if (reqer.session.watchep == undefined) {
+        reqer.session.watchep = {};
+    }
+    if (reqer.session.watchep[name.toString()] == undefined) {
+        reqer.session.watchep[name.toString()] = {};
+    }
+    if (reqer.session.watchep[name.toString()][ep.toString()] == undefined) {
+        reqer.session.watchep[name.toString()][ep.toString()] = {};
+    }
+    reqer.session.watchep[name.toString()][ep.toString()] = 1;
+    // 
+    try {
+        request('https://cumanga.com/manga-' + reqer.params.name + '/ch-' + reqer.params.ep + '/', function (error, req, html) {
+            if (!error & req.statusCode == 200) {
+                var $ = cheerio.load(html);
+                $('img').each(function (i, elem) {
+                    image[i] = $(this).attr('src');
+                });
+                reser.render('detail/read', { title: reqer.params.name.replace(/-/g, ' '), ep: reqer.params.ep, image: image });
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    // reser.send(req.params.name + '-' + req.params.ep);
+    
 });
 
 
 // AJAX 
 
-app.get('/ajax/detail/ep/:name', async function (req, reser) {
+app.get('/ajax/detail/ep/:name', async function (reqed, reser) {
     var ep = [];
-    request('https://cumanga.com/manga-' + req.params.name + '/', async function (error, r, html) {
+    request('https://cumanga.com/manga-' + reqed.params.name + '/', async function (error, r, html) {
         if (!error & r.statusCode == 200) {
             var $ = cheerio.load(html);
             var lastEp = parseInt($('.doujin_p_tag3').eq(0).children('span').text().replace('ตอนที่ ', '').trim());
-            var FristEp;
+            var FristEp = 1;
             var countPage = $('select.form-control').eq(0).children('option').length;
             var j = 0;
+            console.log("countPage :" + countPage);
             if (countPage > 1) {
-                request('https://cumanga.com/manga-' + req.params.name + '/page-' + countPage + '/', async function (error, req, html) {
+                request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + countPage + '/', async function (error, req, html) {
                     if (!error & req.statusCode == 200) {
                         var $ = cheerio.load(html);
                         FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
+                        if (FristEp > 1) {
+                            FristEp = 1;
+                        }
+                        if (FristEp > lastEp) {
+                            FristEp = 1;
+                        }
+                        if (isNaN(FristEp)) {
+                            FristEp = 1;
+                        }
                         console.log(countPage);
                         for (var i = FristEp; i <= lastEp; i++) {
-                            
-                            ep[j] = i;
-                            j+=1
-                        }
-                        console.log(lastEp);
-                        console.log(ep);
 
-                        reser.render('ajax/detail/ep', { ep: ep });
-                    } 
+                            ep[j] = i;
+                            j += 1
+                        }
+                        console.log(lastEp + "lastEP");
+                        console.log(FristEp + "FristEp");
+                        reser.render('ajax/detail/ep', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session });
+                    }
                 });
-            }else{
+            } else {
                 FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
-
+                console.log(lastEp + "lastEP");
+                console.log(FristEp + "FristEp");
                 console.log(countPage);
-                        for (var i = FristEp; i <= lastEp; i++) {
-                            ep[j] = i;
-                            j+=1
+                if (FristEp > lastEp) {
+                    FristEp = 1;
+                }
+                if (isNaN(FristEp)) {
+                    FristEp = 1;
+                }
+                for (var i = FristEp; i <= lastEp; i++) {
+                    ep[j] = i;
+                    j += 1
 
-                        }
-                        console.log(lastEp);
-                        reser.render('ajax/detail/ep', { ep: ep });
+                }
+                console.log(lastEp);
+                reser.render('ajax/detail/ep', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session });
             }
 
         }

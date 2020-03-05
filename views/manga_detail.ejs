@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoonManga</title>
+    <title> มังงะ <%= title %> อ่าน แปลไทย - MoonManga</title>
     <link rel="shortcut icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Mitr&display=swap" rel="stylesheet">
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"></script>
     <style>
         .card:hover {
             background-size: 120% !important;
@@ -104,12 +104,8 @@
                                   } %>
                                 <p style="color: #1b1b1b;"> จำนวนคนอ่าน : <%= formatNumber(view) %> </p>
                             </div>
-                            <a href="" class="btn btn-info" style="background-color: #1ba0e2;border-color: #1ba0e2;">
-                                อ่านตอนแรก
-                            </a>
-                            <a id="mobileWatch" href="" class="btn btn-info"
-                                style="background-color: #1ba0e2;border-color: #1ba0e2;">
-                                อ่านตอนล่าสุด </a>
+                            <div id="idreadfrist"></div>
+
                             <!-- <p style="color: #1b1b1b;width: 600px;"> เรื่องย่อ : <%= des %> </p> -->
                         </div>
                     </div>
@@ -182,13 +178,13 @@
     <script>
         $.ajax({
             url: "/ajax/detail/ep/<%= name %>/", success: function (result) {
-                $("#episode").html(result);
+                $("#episode").html(result.substring(result.indexOf('<!-- start -->'), result.indexOf('<!-- end -->')));
+                $("#idreadfrist").html(result.substring(result.indexOf('<!-- read -->'), result.indexOf('<!-- stop -->')));
             }
         });
         var md = new MobileDetect(window.navigator.userAgent);
         console.log(md.mobile());
         if (md.mobile() != null) {
-            // $('#warp').css('white-space', 'nowrap').css('overflow', 'hidden').css('text-overflow', 'ellipsis');
             $('#warp').css('width', screen.width - 150);
             $('#mobileStat').hide();
             $('#mobileWatch').css('margin-top', '15px');

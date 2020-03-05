@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> มังงะ <%= title %> ตอนที่ <%= ep %> อ่าน แปลไทย - MoonManga</title>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Mitr&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"></script>
+    <style>
+        .card:hover {
+            background-size: 120% !important;
+        }
+
+        .btn-outline-info:hover {
+            background-color: #1ba0e2 !important;
+            color: white !important;
+        }
+
+        .boxep {
+            border: 2px solid #c9c9c9;
+            background-color: #c9c9c9;
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: #1b1b1b;
+        }
+
+        .boxep:hover {
+            transition: .5s;
+            border: 2px solid #ababab;
+            background-color: #ababab;
+            color: #1b1b1b;
+        }
+    </style>
+</head>
+
+<body style="font-family: 'Mitr' !important;background-color: #1b1b1b;">
+    <div id="navbar">
+        <nav id="na" class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #1b1b1b;">
+            <div class="container"><a class="navbar-brand" href="/"><span style="color: #1ba0e2;">M</span>MANGA</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Dropdown
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>
+                      
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit"
+                            style="border-color: #1ba0e2;color: #1ba0e2;">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <br><br><br><br>
+    <div class="container" style="color:white;">
+        <center>
+            <h1>อ่าน <%= title.replace('121455','') %> ตอนที่ <%= ep %> </h1>
+            <br>
+            <% for( let i = 1; i < image.length-2; i++ ) { %>
+            <img src="<%= image[i] %>" width="100%" alt="">
+            <% } %>
+        </center>
+
+    </div>
+
+    <br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br><br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br><br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br><br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br><br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br><br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br><br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br><br><br><br>
+    <br><br><br>
+    <br><br><br>
+    <br><br><br>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
+    <script>
+        $('document').ready(function () {
+            var lastScrollTop = 0;
+            $(window).scroll(function (event) {
+                var st = $(this).scrollTop();
+                if (st > lastScrollTop) {
+                    console.log("down")
+                    $('#navbar').hide();
+
+                }
+                else if (st == lastScrollTop) {
+                    
+                }
+                else {
+                    $('#navbar').show();
+                    console.log("up")
+                }
+                lastScrollTop = st;
+            });
+        });
+    </script>
+    <%- include('../include/footer') %>
+</body>
+
+</html>

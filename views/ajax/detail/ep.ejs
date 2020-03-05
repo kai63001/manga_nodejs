@@ -1,14 +1,47 @@
+<!-- start -->
 <div class="container">
     <div class="row">
-        <% ep.reverse(); %> 
+        <% ep.reverse(); %>
         <% for( let i = 0; i <  ep.length; i++ ) { %>
+        <% if (session.watchep[name.toString()]) { %>
+        <% if (session.watchep[name.toString()][ep[i].toString()] == 1) { %>
         <div class="col-md-2" style="padding-bottom:15px;">
-            <a href="" style="text-decoration: none;">
+            <a href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
+                <div class="boxep" style="background-color: #1ba0e2;border-color: #1ba0e2;color: white;">
+                    <center> <i class="fas fa-check"></i> ตอนที่ <%= ep[i] %> </center>
+                </div>
+            </a>
+        </div>
+        <% }else{ %>
+        <div class="col-md-2" style="padding-bottom:15px;">
+            <a href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
                 <div class="boxep" style="">
-                    <center>ตอนที่ <%= ep[i] %> </center>
+                    <center> ตอนที่ <%= ep[i] %> </center>
                 </div>
             </a>
         </div>
         <% } %>
+        <% }else{ %>
+        <div class="col-md-2" style="padding-bottom:15px;">
+            <a href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
+                <div class="boxep" style="">
+                    <center> ตอนที่ <%= ep[i] %> </center>
+                </div>
+            </a>
+        </div>
+        <% } %>
+        <% } %>
     </div>
 </div>
+<!-- end -->
+
+<!-- read -->
+<a href="/manga/<%= name %>/read/<%= FristEp %>" class="btn btn-info"
+    style="background-color: #1ba0e2;border-color: #1ba0e2;">
+    อ่านตอนแรก
+</a>
+<a id="mobileWatch" href="/manga/<%= name %>/read/<%= lastEp %>" class="btn btn-info"
+    style="background-color: #1ba0e2;border-color: #1ba0e2;">
+    อ่านตอนล่าสุด
+</a>
+<!-- stop -->
