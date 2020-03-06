@@ -261,18 +261,95 @@ app.get('/manga/:name/read/:ep', function (reqer, reser) {
                 $('img').each(function (i, elem) {
                     image[i] = $(this).attr('src');
                 });
-                reser.render('detail/read', { title: reqer.params.name.replace(/-/g, ' '), ep: reqer.params.ep, image: image });
+                reser.render('detail/read', { title: reqer.params.name.replace(/-/g, ' '), ep: reqer.params.ep, image: image, name: reqer.params.name });
             }
         });
     } catch (error) {
         console.log(error);
     }
-    // reser.send(req.params.name + '-' + req.params.ep);
-    
+
 });
 
 
 // AJAX 
+
+app.get('/ajax/detail/allep/:name/:nowep', async function (reqed, reser) {
+    var ep = [];
+
+    try {
+        request('https://cumanga.com/manga-' + reqed.params.name + '/', async function (error, req, html) {
+            if (!error && req.statusCode == 200) {
+                try {
+                    var $ = cheerio.load(html);
+                    var lastEp = parseInt($('.doujin_p_tag3').eq(0).children('span').text().replace('ตอนที่ ', '').trim());
+                    var FristEp = 1;
+                    var countPage = $('select.form-control').eq(0).children('option').length;
+                    var j = 0;
+                    console.log("countPage :" + countPage);
+                    if (countPage > 1) {
+                        request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + countPage + '/', async function (error, req, html) {
+                            if (!error & req.statusCode == 200) {
+                                var $ = cheerio.load(html);
+                                FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
+                                if (FristEp > 1) {
+                                    FristEp = 1;
+                                }
+                                if (FristEp > lastEp) {
+                                    FristEp = 1;
+                                }
+                                if (isNaN(FristEp)) {
+                                    FristEp = 1;
+                                }
+                                if (FristEp > 1) {
+                                    if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
+                                        FristEp = 1;
+                                    }
+                                }
+                                console.log(countPage);
+                                for (var i = FristEp; i <= lastEp; i++) {
+
+                                    ep[j] = i;
+                                    j += 1
+                                }
+                                console.log(lastEp + "lastEP");
+                                console.log(FristEp + "FristEp");
+                                reser.render('ajax/detail/epall', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session, nowep: reqed.params.nowep });
+                            }
+                        });
+                    } else {
+                        FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
+
+                        console.log(lastEp + "lastEP");
+                        console.log(FristEp + "FristEp");
+                        console.log(countPage);
+                        if (FristEp > lastEp) {
+                            FristEp = 1;
+                        }
+                        if (isNaN(FristEp)) {
+                            FristEp = 1;
+                        }
+                        if (FristEp > 1) {
+                            if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
+                                FristEp = 1;
+                            }
+                        }
+                        for (var i = FristEp; i <= lastEp; i++) {
+                            ep[j] = i;
+                            j += 1
+
+                        }
+                        console.log(lastEp);
+                        reser.render('ajax/detail/epall', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session, nowep: reqed.params.nowep });
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+});
 
 app.get('/ajax/detail/ep/:name', async function (reqed, reser) {
     var ep = [];
@@ -298,6 +375,11 @@ app.get('/ajax/detail/ep/:name', async function (reqed, reser) {
                         if (isNaN(FristEp)) {
                             FristEp = 1;
                         }
+                        if (FristEp > 1) {
+                            if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
+                                FristEp = 1;
+                            }
+                        }
                         console.log(countPage);
                         for (var i = FristEp; i <= lastEp; i++) {
 
@@ -319,6 +401,11 @@ app.get('/ajax/detail/ep/:name', async function (reqed, reser) {
                 }
                 if (isNaN(FristEp)) {
                     FristEp = 1;
+                }
+                if (FristEp > 1) {
+                    if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
+                        FristEp = 1;
+                    }
                 }
                 for (var i = FristEp; i <= lastEp; i++) {
                     ep[j] = i;

@@ -55,19 +55,19 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
+                        <span style="margin-left:160px;"></span>
+                        <span style="margin-left: 15px;"></span>
+                        <li class="nav-item dropdown" id="preEp" style="">
+
                         </li>
-                      
+                        <span style="margin-left: 15px;"></span>
+                        <li class="nav-item dropdown" id="epall">
+                        </li>
+                        <span style="margin-left: 15px;"></span>
+                        <li class="nav-item dropdown" id="nextEp" style="">
+
+                        </li>
+
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -84,7 +84,9 @@
             <h1>อ่าน <%= title.replace('121455','') %> ตอนที่ <%= ep %> </h1>
             <br>
             <% for( let i = 1; i < image.length-2; i++ ) { %>
-            <img src="<%= image[i] %>" width="100%" alt="">
+            <img src="<%= image[i] %>" width="70%"
+                alt="อ่านมังงะ <%= title.replace('121455','') %> ตอนที่ <%= ep %> หน้า <%= i %>  ">
+            <br>
             <% } %>
         </center>
 
@@ -97,24 +99,7 @@
     <br><br><br>
     <br><br><br>
     <br><br><br><br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br><br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br><br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br><br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br><br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br><br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br>
+
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
@@ -135,7 +120,7 @@
 
                 }
                 else if (st == lastScrollTop) {
-                    
+
                 }
                 else {
                     $('#navbar').show();
@@ -143,6 +128,15 @@
                 }
                 lastScrollTop = st;
             });
+        });
+        name = '<%= name %>';
+        ep = '<%= ep %>';
+        $.ajax({
+            url: "/ajax/detail/allep/" + name + "/" + ep, success: function (result) {
+                $("#epall").html(result.substring(result.indexOf('<!-- selection -->'), result.indexOf('<!-- end_selection -->')));
+                $("#nextEp").html(result.substring(result.indexOf('<!-- next_ep -->'), result.indexOf('<!-- end_next_ep -->')));
+                $("#preEp").html(result.substring(result.indexOf('<!-- pre_ep -->'), result.indexOf('<!-- end_pre_ep -->')));
+            }
         });
     </script>
     <%- include('../include/footer') %>
