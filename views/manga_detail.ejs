@@ -35,6 +35,7 @@
             color: #1b1b1b;
         }
     </style>
+    
 </head>
 
 <body style="font-family: 'Mitr' !important;">
@@ -82,7 +83,7 @@
     </div>
 
     <div id="toTop" style="margin-top: -140px;color: white;">
-        <div class="container">
+        <div class="container" style="overflow: hidden;">
             <div class="row">
                 <div class="col-md-7">
                     <div class="row">
@@ -92,7 +93,7 @@
                                 width="100%" alt="">
                         </div>
                         <div class="col-md-6 col-6">
-                            <h1 id="warp">
+                            <h1 id="warp" style="text-overflow: ellipsis;">
                                 <p><%= title %> </p>
                             </h1>
                             <!-- <div id="paddingMobile"></div> -->
@@ -116,22 +117,31 @@
         <br>
         <div class="container" style="color: #1b1b1b;">
             <div class="row">
-                <div class="col-md-4">
-                    <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;">
-                        asdas
+                <div class="col-md-3">
+                    <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;padding:15px;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                asd
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-9">
                     <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;">
                         <strong><b>เรื่องย่อ :</b></strong>
                         <br>
+                        <% if (des.trim() == '-') { %>
+                            <%= title %> 
+                        <% }else{ %>
                         <%= des %>
+                        <% } %>
                         <% if (tags.length > 1) { %>
                         <hr style="color: white;background-color: #1ba0e2;">
                         <strong><b>หมวดหมู่ :</b></strong>
                         <br>
                         <% for( let i = 0; i < tags.length; i++ ) { %>
-                        <a href=""><span class="badge badge-info" style="background-color: #1ba0e2;"><%= tags[i] %>
+                        <a href="/tags/<%= tags[i].trim() %> "><span class="badge badge-info"
+                                style="background-color: #1ba0e2;"><%= tags[i] %>
                             </span></a>
                         <% } %>
                         <% } %>
@@ -156,7 +166,6 @@
         </div>
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
         <script>
 
         </script>

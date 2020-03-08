@@ -8,6 +8,7 @@
 <select class="form-control" onchange="val()" id="select_id">
     <% for( let i = 0; i < ep.length; i++ ) { %>
     <% if (ep[i] == nowep) { %>
+    <% var nowi = i %> 
     <option value="<%= ep[i] %>" selected> ตอนที่ <%= ep[i] %> </option>
 
     <% }else{ %>
@@ -16,9 +17,29 @@
     <% } %>
 </select>
 <!-- end_selection -->
+
+<!-- selection2 -->
+<script>
+    function val2() {
+        d = document.getElementById("select_id2").value;
+        window.location = d;
+    }
+</script>
+<select class="form-control" onchange="val2()" id="select_id2">
+    <% for( let i = 0; i < ep.length; i++ ) { %>
+    <% if (ep[i] == nowep) { %>
+    <% var nowi = i %> 
+    <option value="<%= ep[i] %>" selected> ตอนที่ <%= ep[i] %> </option>
+
+    <% }else{ %>
+    <option value="<%= ep[i] %>"> ตอนที่ <%= ep[i] %> </option>
+    <% } %>
+    <% } %>
+</select>
+<!-- end_selection2 -->
 <!-- next_ep -->
-<% if (nowep < lastEp) { %>
-<a href="<%= parseInt(nowep)+1 %>" class="btn btn-block btn-info my-2 my-sm-0"
+<% if (ep[nowi+1]) { %>
+<a href="<%= ep[nowi+1] %>" class="btn btn-block btn-info my-2 my-sm-0"
     style="border-color: #1ba0e2 !important;background: #1ba0e2;color: #1ba0e2; color: white;">ตอนต่อไป</a>
 <% }else{ %>
     <button  disabled class="btn btn-info btn-block my-2 my-sm-0"
@@ -27,7 +48,7 @@
 <!-- end_next_ep -->
 <!-- pre_ep -->
 <% if (nowep > FristEp) { %>
-<a href="<%= parseInt(nowep)-1 %>" class="btn btn-block btn-info my-2 my-sm-0"
+<a href="<%= ep[nowi-1] %>" class="btn btn-block btn-info my-2 my-sm-0"
     style="border-color: #1ba0e2 !important;background: #1ba0e2;color: #1ba0e2; color: white;">ตอนที่แล้ว</a>
 <% }else{ %>
     <button  disabled class="btn btn-info btn-block my-2 my-sm-0"

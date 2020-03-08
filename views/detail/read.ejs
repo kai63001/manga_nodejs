@@ -55,16 +55,22 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#">Link</a>
                         </li>
-                        <span style="margin-left:160px;"></span>
+                        <span style="margin-left:100px;"></span>
                         <span style="margin-left: 15px;"></span>
-                        <li class="nav-item dropdown" id="preEp" style="">
+                        <li class="nav-item dropdown" id="">
+                            <a href="../" class="btn btn-info btn-block"
+                                style="border-color: #1ba0e2;background: #1ba0e2;color: white;"><i
+                                    class="fas fa-home"></i></a>
+                        </li>
+                        <span style="margin-left: 15px;"></span>
+                        <li class="nav-item dropdown" id="preEp">
 
                         </li>
                         <span style="margin-left: 15px;"></span>
                         <li class="nav-item dropdown" id="epall">
                         </li>
                         <span style="margin-left: 15px;"></span>
-                        <li class="nav-item dropdown" id="nextEp" style="">
+                        <li class="nav-item dropdown" id="nextEp">
 
                         </li>
 
@@ -83,23 +89,80 @@
         <center>
             <h1>อ่าน <%= title.replace('121455','') %> ตอนที่ <%= ep %> </h1>
             <br>
+            <div class="row">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                    <script>
+                        function sizeval() {
+                            d = document.getElementById("size_id").value;
+                            var imageLen = parseInt('<%= image.length-2 %>');
+                            $.ajax({
+                                url: "/ajax/detail/changesize/" + d, success: function (result) {
+                                    for (i = 0; i < imageLen; i++) {
+                                        document.getElementsByClassName("image-resiponse")[i].style.width = d + "%";
+                                    }
+
+                                }
+                            });
+                        }
+                    </script>
+                    <select onchange="sizeval()" id="size_id" class="form-control">
+                        <% if (session.sizeImage == undefined) { %>
+                        <% for( let i = 1; i <= 10; i++ ) { %>
+                        <% if (i == 7) { %>
+                        <option value="70" selected> ขนาดรูปภาพ : 70%</option>
+
+                        <% }else{ %>
+                        <option value="<%= i%>0"> ขนาดรูปภาพ :<%= i%>0%</option>
+                        <% } %>
+                        <% } %>
+                        <% }else{ %>
+                        <% for( let i = 1; i <= 10; i++ ) { %>
+                        <% if (i == session.sizeImage/10) { %>
+                        <option value="session.sizeImage" selected> ขนาดรูปภาพ : <%= session.sizeImage%>%</option>
+
+                        <% }else{ %>
+                        <option value="<%= i%>0"> ขนาดรูปภาพ : <%= i%>0%</option>
+                        <% } %>
+                        <% } %>
+                        <% } %>
+
+                    </select>
+                </div>
+            </div>
+            <br>
             <% for( let i = 1; i < image.length-2; i++ ) { %>
-            <img src="<%= image[i] %>" width="70%"
+            <% if (session.sizeImage == undefined) { %>
+            <img src="<%= image[i] %>" class="image-resiponse" width="70%" id="myImg"
                 alt="อ่านมังงะ <%= title.replace('121455','') %> ตอนที่ <%= ep %> หน้า <%= i %>  ">
+            <% }else{ %>
+            <img src="<%= image[i] %>" class="image-resiponse" width="<%= session.sizeImage %>%" id="myImg"
+                alt="อ่านมังงะ <%= title.replace('121455','') %> ตอนที่ <%= ep %> หน้า <%= i %>  ">
+            <% } %>
+
             <br>
             <% } %>
         </center>
 
     </div>
+    <br>
+    <div class="container">
+        <center>
+            <div class="row">
+                <div class="col-md-3 col-4">
+                    <div id="b_preEp"></div>
+                </div>
+                <div class="col-md-6 col-4">
+                    <div id="b_epall"></div>
+                </div>
+                <div class="col-md-3 col-4">
+                    <div id="b_nextEp"></div>
+                </div>
+            </div>
+        </center>
+    </div>
 
-    <br><br><br>
-    <br><br><br>
-    <br><br><br>
     <br><br><br><br><br><br>
-    <br><br><br>
-    <br><br><br>
-    <br><br><br><br><br><br>
-
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
@@ -110,22 +173,51 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     <script>
+        var md = new MobileDetect(window.navigator.userAgent);
+        console.log(md.mobile());
+        if (md.mobile() != null) {
+            $('.container').css('padding', '0px');
+            d = '100';
+            var imageLen = parseInt('<%= image.length-2 %>');
+            $.ajax({
+                url: "/ajax/detail/changesize/" + d, success: function (result) {
+                    for (i = 0; i < imageLen; i++) {
+                        document.getElementsByClassName("image-resiponse")[i].style.width = d + "%";
+                    }
+
+                }
+            });
+        } else {
+            // $('.container').css('padding', '0px');
+        }
         $('document').ready(function () {
+            var g = 0;
             var lastScrollTop = 0;
             $(window).scroll(function (event) {
                 var st = $(this).scrollTop();
-                if (st > lastScrollTop) {
-                    console.log("down")
-                    $('#navbar').hide();
+                if (st < 30) {
+                    $('#navbar').fadeIn(500);
+                } else {
+                    if (st > lastScrollTop) {
+                        console.log("down")
+                        $('#navbar').fadeOut(500);
+                        g = 0;
 
-                }
-                else if (st == lastScrollTop) {
+                    }
+                    else if (st == lastScrollTop) {
 
+                    }
+                    else {
+                        g += 1;
+                        if (g >= 20) {
+                            $('#navbar').fadeIn(500);
+                            g = 0;
+                        }
+                        console.log("up")
+                        console.log(g)
+                    }
                 }
-                else {
-                    $('#navbar').show();
-                    console.log("up")
-                }
+
                 lastScrollTop = st;
             });
         });
@@ -136,6 +228,9 @@
                 $("#epall").html(result.substring(result.indexOf('<!-- selection -->'), result.indexOf('<!-- end_selection -->')));
                 $("#nextEp").html(result.substring(result.indexOf('<!-- next_ep -->'), result.indexOf('<!-- end_next_ep -->')));
                 $("#preEp").html(result.substring(result.indexOf('<!-- pre_ep -->'), result.indexOf('<!-- end_pre_ep -->')));
+                $("#b_epall").html(result.substring(result.indexOf('<!-- selection2 -->'), result.indexOf('<!-- end_selection2 -->')));
+                $("#b_nextEp").html(result.substring(result.indexOf('<!-- next_ep -->'), result.indexOf('<!-- end_next_ep -->')));
+                $("#b_preEp").html(result.substring(result.indexOf('<!-- pre_ep -->'), result.indexOf('<!-- end_pre_ep -->')));
             }
         });
     </script>

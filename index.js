@@ -69,6 +69,62 @@ app.get('/', function (req, reser) {
     reser.render('index', { session: req.session });
 });
 
+app.get('/manga', function (reqer, reser) {
+    var image = [];
+    var name = [];
+    var ep = [];
+    var url = [];
+    var lastPage = 100;
+    var page = reqer.query.page;
+    if (!page) {
+        page = 1;
+    }
+    if (page == 1) {
+        request('https://cumanga.com/', function (error, res, html) {
+            if (!error & res.statusCode == 200) {
+                var $ = cheerio.load(html);
+                try {
+                    console.log($("style").length);
+                    for (var i = 0; i < $("style").length; i++) {
+                        var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
+                        image[i] = one.substr(1, one.indexOf("')") - 1);
+                        name[i] = $(".doujin_name").eq(i).text();
+                        ep[i] = $('.doujin_t_red').eq(i).text();
+                        url[i] = $('.col-6').eq(i).attr("href");
+                        lastPage = $('select').eq(0).children().length;
+                    }
+                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
+    } else {
+        request('https://cumanga.com/pages-' + page + '/', function (error, res, html) {
+            if (!error & res.statusCode == 200) {
+                var $ = cheerio.load(html);
+                try {
+                    console.log($("style").length);
+                    for (var i = 0; i < $("style").length; i++) {
+                        var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
+                        image[i] = one.substr(1, one.indexOf("')") - 1);
+                        name[i] = $(".doujin_name").eq(i).text();
+                        ep[i] = $('.doujin_t_red').eq(i).text();
+                        url[i] = $('.col-6').eq(i).attr("href");
+                        lastPage = $('select').eq(0).children().length;
+                    }
+
+                    console.log(name);
+                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
+    }
+
+});
+
 app.get('/manga/:name', function (reqer, reser) {
     if (reqer.session.watchep == undefined) {
         reqer.session.watchep = {};
@@ -139,63 +195,68 @@ app.get('/manga/:name', function (reqer, reser) {
                             status = $(".text-light").eq(1).text();
                             // console.log('https://www.anime-planet.com/manga/all?name='+title);
                             var titleed = title.replace(/ /g, '+');
-
+                            
                             request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
-                                if (!errorqqq & reqqq.statusCode == 200) {
-                                    try {
-                                        var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
-                                        htmled = htmled.substr(0, htmled.indexOf('myListBar'));
-                                        var $s = cheerio.load(htmled);
-                                        if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
-                                            $s('a').each(function (i, elem) {
-                                                tags[i] = $s(this).text().replace(/\n/g, '');
-                                            });
-                                            console.log(tags);
-                                            con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (err, res) {
-                                            });
-                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
-
-                                        } else {
-                                            titleed = titleed.substr(0, titleed.length / 3);
-                                            request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
-                                                if (!errorqqq & reqqq.statusCode == 200) {
-                                                    var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
-                                                    htmled = htmled.substr(0, htmled.indexOf('myListBar'));
-                                                    var $s = cheerio.load(htmled);
-                                                    if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
-                                                        $s('a').each(function (i, elem) {
-                                                            tags[i] = $s(this).text().replace(/\n/g, '');
-                                                        });
-                                                        console.log('asdasdasdasdasdas');
-                                                        console.log(tags);
-                                                        con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
-                                                            if (sres) {
-                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
-                                                            }
-                                                            if (serr) {
-                                                                console.log(serr);
-                                                            }
-                                                        });
-                                                    } else {
-                                                        console.log('asdasdasdasdasdas2');
-                                                        con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
-                                                            if (sres) {
-                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
-                                                            }
-                                                            if (serr) {
-                                                                console.log(serr);
-                                                            }
-                                                        });
-
-
+                                try {
+                                    if (!errorqqq & reqqq.statusCode == 200) {
+                                        try {
+                                            var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
+                                            htmled = htmled.substr(0, htmled.indexOf('myListBar'));
+                                            var $s = cheerio.load(htmled);
+                                            if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
+                                                $s('a').each(function (i, elem) {
+                                                    tags[i] = $s(this).text().replace(/\n/g, '');
+                                                });
+                                                console.log(tags);
+                                                con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (err, res) {
+                                                });
+                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
+    
+                                            } else {
+                                                titleed = titleed.substr(0, titleed.length / 3);
+                                                request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
+                                                    if (!errorqqq & reqqq.statusCode == 200) {
+                                                        var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
+                                                        htmled = htmled.substr(0, htmled.indexOf('myListBar'));
+                                                        var $s = cheerio.load(htmled);
+                                                        if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
+                                                            $s('a').each(function (i, elem) {
+                                                                tags[i] = $s(this).text().replace(/\n/g, '');
+                                                            });
+                                                            console.log('asdasdasdasdasdas');
+                                                            console.log(tags);
+                                                            con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
+                                                                if (sres) {
+                                                                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
+                                                                }
+                                                                if (serr) {
+                                                                    console.log(serr);
+                                                                }
+                                                            });
+                                                        } else {
+                                                            console.log('asdasdasdasdasdas2');
+                                                            con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
+                                                                if (sres) {
+                                                                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
+                                                                }
+                                                                if (serr) {
+                                                                    console.log(serr);
+                                                                }
+                                                            });
+    
+    
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            }
+                                        } catch (errorqqq) {
+                                            console.log(errorqqq);
                                         }
-                                    } catch (errorqqq) {
-                                        console.log(errorqqq);
                                     }
+                                } catch (error) {
+                                    
                                 }
+                                
                             });
                             var mangareaded = reqer.session.readedmanga_name;
                             if (mangareaded == undefined) {
@@ -261,7 +322,7 @@ app.get('/manga/:name/read/:ep', function (reqer, reser) {
                 $('img').each(function (i, elem) {
                     image[i] = $(this).attr('src');
                 });
-                reser.render('detail/read', { title: reqer.params.name.replace(/-/g, ' '), ep: reqer.params.ep, image: image, name: reqer.params.name });
+                reser.render('detail/read', { title: reqer.params.name.replace(/-/g, ' '), ep: reqer.params.ep, image: image, name: reqer.params.name, session: reqer.session });
             }
         });
     } catch (error) {
@@ -270,8 +331,31 @@ app.get('/manga/:name/read/:ep', function (reqer, reser) {
 
 });
 
+app.get('/tags/:tags', function (reqer, reser) {
+
+    var perpage = 25;
+    var page;
+    if (reqer.query.page) {
+        page = reqer.query.page;
+    } else {
+        page = 1;
+    }
+
+    var start = (page - 1) * perpage;
+    con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%' limit "+start+" , "+perpage, async function (err, resquert) {
+        var lastPage = Math.ceil(resquert.length / perpage);
+        reser.render('list/manga_tags', { tags: resquert ,lastPage:lastPage});
+
+    });
+});
 
 // AJAX 
+
+app.get('/ajax/detail/changesize/:size', async function (req, res) {
+    req.session.sizeImage = req.params.size;
+    console.log(req.session.sizeImage);
+    res.send('success');
+});
 
 app.get('/ajax/detail/allep/:name/:nowep', async function (reqed, reser) {
     var ep = [];
@@ -281,65 +365,53 @@ app.get('/ajax/detail/allep/:name/:nowep', async function (reqed, reser) {
             if (!error && req.statusCode == 200) {
                 try {
                     var $ = cheerio.load(html);
-                    var lastEp = parseInt($('.doujin_p_tag3').eq(0).children('span').text().replace('ตอนที่ ', '').trim());
-                    var FristEp = 1;
                     var countPage = $('select.form-control').eq(0).children('option').length;
                     var j = 0;
                     console.log("countPage :" + countPage);
+                    var loops = 1;
                     if (countPage > 1) {
-                        request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + countPage + '/', async function (error, req, html) {
-                            if (!error & req.statusCode == 200) {
-                                var $ = cheerio.load(html);
-                                FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
-                                if (FristEp > 1) {
-                                    FristEp = 1;
-                                }
-                                if (FristEp > lastEp) {
-                                    FristEp = 1;
-                                }
-                                if (isNaN(FristEp)) {
-                                    FristEp = 1;
-                                }
-                                if (FristEp > 1) {
-                                    if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
-                                        FristEp = 1;
+                        for (var d = 0; d < countPage + 1; d++) {
+                            if (d != 1) {
+                                request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + d + '/', function (error, req, html) {
+                                    if (!error & req.statusCode == 200) {
+                                        var $ = cheerio.load(html);
+                                        console.log($('.doujin_t_red').length + "doujin_t_red.lenght");
+                                        for (var i = 0; i < $('.doujin_t_red').length; i++) {
+                                            if (($('.doujin_t_blue').eq(i).text()) != "737886 วัน ที่แล้ว") {
+                                                if (isNaN(parseFloat($('.doujin_t_red').eq(i).text().replace('ตอนที่ ', '')))) {
+
+                                                } else {
+                                                    ep[j] = parseFloat($('.doujin_t_red').eq(i).text().replace('ตอนที่ ', ''));
+                                                    j += 1
+                                                }
+
+                                            }
+                                        }
+                                        loops += 1
+
+                                        if (loops == countPage + 1) {
+                                            console.log('asdass');
+                                            ep.sort(function (a, b) { return a - b });
+                                            console.log(ep);
+                                            reser.render('ajax/detail/epall', { ep: ep, FristEp: ep[0], lastEp: ep[ep.length - 1], name: reqed.params.name, session: reqed.session, nowep: reqed.params.nowep });
+
+                                        }
+
+
                                     }
-                                }
-                                console.log(countPage);
-                                for (var i = FristEp; i <= lastEp; i++) {
 
-                                    ep[j] = i;
-                                    j += 1
-                                }
-                                console.log(lastEp + "lastEP");
-                                console.log(FristEp + "FristEp");
-                                reser.render('ajax/detail/epall', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session, nowep: reqed.params.nowep });
+                                });
                             }
-                        });
+                        }
                     } else {
-                        FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
-
-                        console.log(lastEp + "lastEP");
-                        console.log(FristEp + "FristEp");
-                        console.log(countPage);
-                        if (FristEp > lastEp) {
-                            FristEp = 1;
-                        }
-                        if (isNaN(FristEp)) {
-                            FristEp = 1;
-                        }
-                        if (FristEp > 1) {
-                            if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
-                                FristEp = 1;
+                        for (var i = 0; i < $('.doujin_t_red').length; i++) {
+                            if (($('.doujin_t_blue').eq(i).text()) != "737886 วัน ที่แล้ว") {
+                                ep[j] = $('.doujin_t_red').eq(i).text().replace('ตอนที่ ', '');
+                                j += 1
                             }
                         }
-                        for (var i = FristEp; i <= lastEp; i++) {
-                            ep[j] = i;
-                            j += 1
-
-                        }
-                        console.log(lastEp);
-                        reser.render('ajax/detail/epall', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session, nowep: reqed.params.nowep });
+                        ep.sort(function (a, b) { return a - b });
+                        reser.render('ajax/detail/epall', { ep: ep, FristEp: ep[0], lastEp: ep[ep.length - 1], name: reqed.params.name, session: reqed.session, nowep: reqed.params.nowep });
                     }
                 } catch (error) {
                     console.log(error);
@@ -351,69 +423,61 @@ app.get('/ajax/detail/allep/:name/:nowep', async function (reqed, reser) {
     }
 });
 
+
+
 app.get('/ajax/detail/ep/:name', async function (reqed, reser) {
     var ep = [];
-    request('https://cumanga.com/manga-' + reqed.params.name + '/', async function (error, r, html) {
+    request('https://cumanga.com/manga-' + reqed.params.name + '/', function (error, r, html) {
         if (!error & r.statusCode == 200) {
             var $ = cheerio.load(html);
-            var lastEp = parseInt($('.doujin_p_tag3').eq(0).children('span').text().replace('ตอนที่ ', '').trim());
-            var FristEp = 1;
             var countPage = $('select.form-control').eq(0).children('option').length;
             var j = 0;
+            var loops = 1;
             console.log("countPage :" + countPage);
             if (countPage > 1) {
-                request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + countPage + '/', async function (error, req, html) {
-                    if (!error & req.statusCode == 200) {
-                        var $ = cheerio.load(html);
-                        FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
-                        if (FristEp > 1) {
-                            FristEp = 1;
-                        }
-                        if (FristEp > lastEp) {
-                            FristEp = 1;
-                        }
-                        if (isNaN(FristEp)) {
-                            FristEp = 1;
-                        }
-                        if (FristEp > 1) {
-                            if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
-                                FristEp = 1;
+                for (var d = 0; d < countPage + 1; d++) {
+                    if (d != 1) {
+                        request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + d + '/', function (error, req, html) {
+                            if (!error & req.statusCode == 200) {
+                                var $ = cheerio.load(html);
+                                console.log($('.doujin_t_red').length + "doujin_t_red.lenght");
+                                for (var i = 0; i < $('.doujin_t_red').length; i++) {
+                                    if (($('.doujin_t_blue').eq(i).text()) != "737886 วัน ที่แล้ว") {
+                                        if (isNaN(parseFloat($('.doujin_t_red').eq(i).text().replace('ตอนที่ ', '')))) {
+
+                                        } else {
+                                            ep[j] = parseFloat($('.doujin_t_red').eq(i).text().replace('ตอนที่ ', ''));
+                                            j += 1
+                                        }
+                                    }
+                                }
+                                loops += 1
+
+                                if (loops == countPage + 1) {
+                                    console.log('asdass');
+                                    ep.sort(function (a, b) { return a - b });
+                                    console.log(ep);
+                                    reser.render('ajax/detail/ep', { ep: ep, FristEp: ep[0], lastEp: ep[ep.length - 1], name: reqed.params.name, session: reqed.session });
+                                }
+
+
                             }
-                        }
-                        console.log(countPage);
-                        for (var i = FristEp; i <= lastEp; i++) {
 
-                            ep[j] = i;
-                            j += 1
-                        }
-                        console.log(lastEp + "lastEP");
-                        console.log(FristEp + "FristEp");
-                        reser.render('ajax/detail/ep', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session });
+                        });
                     }
-                });
+                }
+
+
             } else {
-                FristEp = (parseInt($('.doujin_p_tag3').eq($('.doujin_p_tag3').length - 1).children('span').text().replace('ตอนที่ ', '').trim()));
-                console.log(lastEp + "lastEP");
-                console.log(FristEp + "FristEp");
-                console.log(countPage);
-                if (FristEp > lastEp) {
-                    FristEp = 1;
-                }
-                if (isNaN(FristEp)) {
-                    FristEp = 1;
-                }
-                if (FristEp > 1) {
-                    if (parseInt($('.doujin_t_blue').eq(lastEp).text().replace(' วัน ที่แล้ว', '')) > 37886) {
-                        FristEp = 1;
+                for (var i = 0; i < $('.doujin_t_red').length; i++) {
+                    if (($('.doujin_t_blue').eq(i).text()) != "737886 วัน ที่แล้ว") {
+                        ep[j] = $('.doujin_t_red').eq(i).text().replace('ตอนที่ ', '');
+                        j += 1
                     }
                 }
-                for (var i = FristEp; i <= lastEp; i++) {
-                    ep[j] = i;
-                    j += 1
 
-                }
-                console.log(lastEp);
-                reser.render('ajax/detail/ep', { ep: ep, FristEp: FristEp, lastEp: lastEp, name: reqed.params.name, session: reqed.session });
+                ep.sort(function (a, b) { return a - b });
+                reser.render('ajax/detail/ep', { ep: ep, FristEp: ep[0], lastEp: ep[ep.length - 1], name: reqed.params.name, session: reqed.session });
             }
 
         }
@@ -429,7 +493,6 @@ app.get('/ajax/index/update', async function (req, reser) {
     if (bool_html) {
         var $ = await cheerio.load(index_html);
         try {
-            console.log($("style").length);
             for (var i = 0; i < 4; i++) {
                 var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
                 image[i] = one.substr(1, one.indexOf("')") - 1);
@@ -438,7 +501,6 @@ app.get('/ajax/index/update', async function (req, reser) {
                 url[i] = $('.col-6').eq(i).attr("href");
             }
 
-            console.log(name);
             reser.render('ajax/index/update', { name: name, image: image, ep: ep, url: url });
         } catch (error) {
             console.log(error);
@@ -454,7 +516,6 @@ app.get('/ajax/index/updateall', async function (req, reser) {
     if (bool_html) {
         var $ = await cheerio.load(index_html);
         try {
-            console.log($("style").length);
             for (var i = 0; i < $("style").length; i++) {
                 var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
                 image[i] = one.substr(1, one.indexOf("')") - 1);
@@ -462,7 +523,6 @@ app.get('/ajax/index/updateall', async function (req, reser) {
                 ep[i] = $('.doujin_t_red').eq(i).text();
                 url[i] = $('.col-6').eq(i).attr("href");
             }
-            console.log(name);
             reser.render('ajax/index/updateall', { name: name, image: image, ep: ep, url: url });
         } catch (error) {
             console.log(error);

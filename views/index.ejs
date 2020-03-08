@@ -15,11 +15,55 @@
             background-size: 120% !important;
         }
     </style>
+    <style>
+        .download-btn {
+            position: absolute;
+            top: 5px;
+            right: 25px;
+            color: white;
+            background-color: black;
+            padding: 3px 9px;
+            border-radius: 3px;
+            opacity: 0;
+            transition: 0.5s;
+            border: 0px;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            color: black;
+            background-color: white;
+        }
+
+        .btngro:hover .download-btn {
+            opacity: 1;
+        }
+
+        .page-item a {
+            position: relative;
+            display: block;
+            padding: .5rem .75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #343a40;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+
+        }
+
+        .activepagi a {
+            text-decoration: none;
+            background-color: #343a40 !important;
+            color: white;
+            border-color: #343a40 !important;
+        }
+    </style>
 </head>
 
 <body style="font-family: 'Mitr' !important;">
     <%- include('include/nav_index') %>
-    <div class="container">
+    <div class="container" id="ontoper">
         <div class="row">
             <div class="col-md-6" style="padding-right: 5px;">
                 <div class="box"
@@ -44,8 +88,9 @@
                 </div>
             </div>
         </div>
+        <br>
+
     </div>
-    <br>
     <div class="container">
         <div class="row">
             <div class="col-md-8">
@@ -57,7 +102,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4 col-4">
                                 <div class="box"
                                     style="background:url('https://www.easybranches.com/feed/uploads/2020/01/d84d82a9b726e3401420530b4c0675b1.jpg');background-size: cover;background-position: center; height: 70px;width: 100px;border-radius: 8px;">
                                     <span class="badge badge-danger"
@@ -66,77 +111,77 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-7"
+                            <div class="col-md-7 col-7"
                                 style="margin-left: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 Solo Leveling
                             </div>
                         </div>
                         <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1">
+                            <div class="col-md-1 col-1">
                                 <span class="badge badge-warning"
                                     style="border-radius: 3px;margin-top:7px;color: white;">2</span>
                             </div>
-                            <div class="col-md-10"
+                            <div class="col-md-10 col-10"
                                 style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 Kage no Jitsuryoku
                             </div>
                         </div>
                         <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1">
+                            <div class="col-md-1 col-1">
                                 <span class="badge badge-success"
                                     style="border-radius: 3px;margin-top:7px;color: white;">3</span>
                             </div>
-                            <div class="col-md-10"
+                            <div class="col-md-10 col-10"
                                 style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 Strongest Worker
                             </div>
                         </div>
                         <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1">
+                            <div class="col-md-1 col-1">
                                 <span class="badge badge-light"
                                     style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">4</span>
                             </div>
-                            <div class="col-md-10"
+                            <div class="col-md-10 col-10"
                                 style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 Tomb of King
                             </div>
                         </div>
                         <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1">
+                            <div class="col-md-1 col-1">
                                 <span class="badge badge-light"
                                     style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">5</span>
                             </div>
-                            <div class="col-md-10"
+                            <div class="col-md-10 col-10"
                                 style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 Rise of The Demon King
                             </div>
                         </div>
                         <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1">
+                            <div class="col-md-1 col-1">
                                 <span class="badge badge-light"
                                     style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">6</span>
                             </div>
-                            <div class="col-md-10"
+                            <div class="col-md-10 col-10"
                                 style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 Metropolitan Supremacy System
                             </div>
                         </div>
                         <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1">
+                            <div class="col-md-1 col-1">
                                 <span class="badge badge-light"
                                     style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">7</span>
                             </div>
-                            <div class="col-md-10"
+                            <div class="col-md-10 col-10"
                                 style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 The Second Coming of Gluttony
                             </div>
                         </div>
                         <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1">
+                            <div class="col-md-1 col-1">
                                 <span class="badge badge-light"
                                     style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">8</span>
                             </div>
-                            <div class="col-md-10"
+                            <div class="col-md-10 col-10"
                                 style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                                 I Have Dragon on My Body
                             </div>
@@ -153,7 +198,7 @@
         </div>
         <div style="clear:both;"></div>
         <div class="row">
-            <div class="col-md-2" style="padding-right: 0px;">
+            <div class="col-md-2 col-6" style="padding-right: 0px;">
                 <a href="" style="text-decoration: none;color: #130C11;">
                     <div class="card"
                         style="background:url('https://1.bp.blogspot.com/-Eg-JPATgjrg/Xld1rzEEN7I/AAAAAAAACKQ/TCrv130ijWk1_FMk96NyjuUbkUATViOCQCLcBGAsYHQ/s0/Oremanga2.jpg');background-size: cover;background-position: center; height: 240px;width: 100%;border-radius: 4px;">
@@ -176,7 +221,7 @@
         <div class="row">
             <% for( let i = session.readedmanga_name.length -1; i > session.readedmanga_name.length -7; i-- ) { %>
             <% if (session.readedmanga_image[i]) { %>
-            <div class="col-md-2" style="padding-right: 0px;">
+            <div class="col-md-2 col-6" style="padding-right: 0px;">
                 <a href="manga/<%= session.readedmanga_url[i] %>" style="text-decoration: none;color: #130C11;">
                     <div class="card"
                         style="background:url('<%= session.readedmanga_image[i] %>');background-size: cover;background-position: center; height: 240px;width: 100%;border-radius: 4px;">
@@ -196,7 +241,8 @@
 
     <div class="container">
         <h4 style="float:left;">มาใหม่</h4>
-        <div style="float:right;margin-top: 5px;"><a href="" style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
+        <div style="float:right;margin-top: 5px;"><a href="/manga"
+                style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
         </div>
         <div style="clear:both;"></div>
         <div id="updateall"></div>
@@ -204,8 +250,10 @@
 
 
 
-    <br><br><br>
-
+    <br>
+    <ul id="pagination-demo" class="justify-content-center">
+    </ul>
+    <br>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -213,8 +261,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
 
     <script>
+        var md = new MobileDetect(window.navigator.userAgent);
+        console.log(md.mobile());
+        if (md.mobile() != null) {
+            $('#ontoper').hide();
+        } else {
+        }
         $.ajax({
             url: "/ajax/index/update", success: function (result) {
                 $("#update4").html(result);
@@ -225,6 +280,38 @@
                 $("#updateall").html(result);
             }
         });
+    </script>
+    <script
+        src="https://www.jqueryscript.net/demo/Simple-Customizable-Pagination-Plugin-with-jQuery-Bootstrap-Twbs-Pagination/jquery.twbsPagination.js"></script>
+    <script>
+        $('#pagination-demo').twbsPagination({
+            totalPages: parseInt('10'),
+            startPage: 1,
+            visiblePages: 5,
+            initiateStartPageClick: true,
+            hideOnlyOnePage: true,
+            href: 'manga/?page={{number}}',
+            pageVariable: '{{page}}',
+            totalPagesVariable: '{{total_pages}}',
+            page: null,
+            first: '',
+            prev: 'Previous',
+            next: 'Next',
+            last: '',
+            loop: false,
+            onPageClick: null,
+
+            paginationClass: 'pagination',
+            nextClass: 'page-item next',
+            prevClass: 'page-item prev',
+            lastClass: 'page-item last',
+            firstClass: 'page-item first',
+            pageClass: 'page-item',
+            activeClass: 'activepagi',
+            disabledClass: 'disabled',
+            anchorClass: 'page-link',
+        });
+
     </script>
     <%- include('include/footer') %>
 </body>
