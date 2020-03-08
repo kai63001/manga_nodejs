@@ -35,7 +35,7 @@
             color: #1b1b1b;
         }
     </style>
-    
+
 </head>
 
 <body style="font-family: 'Mitr' !important;">
@@ -118,12 +118,32 @@
         <div class="container" style="color: #1b1b1b;">
             <div class="row">
                 <div class="col-md-3">
-                    <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;padding:15px;">
+                    <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;">
+                        ชอบเรื่องนี้ : <%= like %> คน<br>
+                        ติดตามแล้ว : <span id="follow_val"><%= follow %></span> คน<br>
+                        <br>
                         <div class="row">
+
+                            <div class="col-md-8" style="padding-right: 0px;">
+
+                                <% if (session.follow_name != undefined &&session.follow_name.includes(title)) { %>
+                                <button class="btn btn-block btn-success" style="margin-top: 0px;">
+                                    <i class="fas fa-check"></i> ติดตามแล้ว </button>
+                                <% }else{ %>
+                                <button id="follow" onclick="follow()" class="btn btn-info btn-block"
+                                    style="border-color: #1ba0e2;background: #1ba0e2;color: white;"> <i
+                                        class="fas fa-bookmark"></i> ติดตาม</button>
+
+                                <button id="follow_success" class="btn btn-block btn-success" style="margin-top: 0px;">
+                                    <i class="fas fa-check"></i> ติดตามแล้ว </button>
+                                <% } %>
+                            </div>
                             <div class="col-md-4">
-                                asd
+                                <button class="btn btn-danger btn-block"><i class="fas fa-thumbs-up"></i></button>
                             </div>
                         </div>
+                        <br>
+                        <button class="btn btn-warning btn-block"> <i class="fas fa-flag"></i> รายงาน </button>
                     </div>
                 </div>
                 <div class="col-md-9">
@@ -131,7 +151,7 @@
                         <strong><b>เรื่องย่อ :</b></strong>
                         <br>
                         <% if (des.trim() == '-') { %>
-                            <%= title %> 
+                        <%= title %>
                         <% }else{ %>
                         <%= des %>
                         <% } %>
@@ -185,6 +205,27 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     <script>
+        $('#follow_success').hide();
+
+        function follow() {
+            console.log('follow');
+            var follow_val = $('#follow_val').html();
+            follow_val = parseInt(follow_val);
+            follow_val += 1;
+            console.log(follow_val.toString());
+
+            $.ajax({
+                url: "/ajax/detail/follow/<%= title %>?image=<%= image %>", success: function (result) {
+
+                    $('#follow').hide();
+                    $('#follow_success').show();
+                    $('#follow_val').html(follow_val.toString());
+
+                }
+            });
+        }
+
+
         $.ajax({
             url: "/ajax/detail/ep/<%= name %>/", success: function (result) {
                 $("#episode").html(result.substring(result.indexOf('<!-- start -->'), result.indexOf('<!-- end -->')));

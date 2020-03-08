@@ -192,25 +192,31 @@
         </div>
     </div>
 
-    <div class="container">
-        <h4 style="float:left;">ที่ติดตาม</h4>
-        <div style="float:right;margin-top: 5px;"><a href="" style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
-        </div>
-        <div style="clear:both;"></div>
-        <div class="row">
-            <div class="col-md-2 col-6" style="padding-right: 0px;">
-                <a href="" style="text-decoration: none;color: #130C11;">
-                    <div class="card"
-                        style="background:url('https://1.bp.blogspot.com/-Eg-JPATgjrg/Xld1rzEEN7I/AAAAAAAACKQ/TCrv130ijWk1_FMk96NyjuUbkUATViOCQCLcBGAsYHQ/s0/Oremanga2.jpg');background-size: cover;background-position: center; height: 240px;width: 100%;border-radius: 4px;">
-                    </div>
-                    <p style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                        <strong> sadasdasd </strong><br>
-                        <strong style="color: gray;"> asdasda </strong>
-                    </p>
-                </a>
+    <% if (session.follow_name.length > 0) { %>
+
+        <div class="container">
+            <h4 style="float:left;">ที่ติดตาม</h4>
+            <div style="float:right;margin-top: 5px;"><a href="" style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
+            </div>
+            <div style="clear:both;"></div>
+            <div class="row">
+                <% for( let i = session.follow_name.length -1; i > session.follow_name.length -7; i-- ) { %>
+                <% if (session.follow_image[i]) { %>
+                <div class="col-md-2 col-6" style="padding-right: 0px;">
+                    <a href="manga/<%= session.follow_url[i] %>" style="text-decoration: none;color: #130C11;">
+                        <div class="card"
+                            style="background:url('<%= session.follow_image[i] %>');background-size: cover;background-position: center; height: 240px;width: 100%;border-radius: 4px;">
+                        </div>
+                        <p style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <strong> <%= session.follow_name[i] %> </strong><br>
+                        </p>
+                    </a>
+                </div>
+                <% } %>
+                <% } %>
             </div>
         </div>
-    </div>
+        <% } %>
     <% if (session.readedmanga_name.length > 0) { %>
 
     <div class="container">

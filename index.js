@@ -146,6 +146,8 @@ app.get('/manga/:name', function (reqer, reser) {
     var year = '';
     var tags = [];
     var view = 1;
+    var follow = 0;
+    var like = 0;
     con.query("select * from manga_detail where md_url = '" + reqer.params.name.toString() + "'", async function (err, resquert) {
         if (resquert.length > 0) {
             // reser.send('added');
@@ -154,6 +156,8 @@ app.get('/manga/:name', function (reqer, reser) {
             des = resquert[0].md_des;
             status = resquert[0].md_status;
             year = resquert[0].md_year;
+            follow = resquert[0].md_follow;
+            like = resquert[0].md_like;
             tags = resquert[0].md_tags.split(",");
             view = parseInt(resquert[0].md_view) + 1;
             con.query("update manga_detail set md_view = '" + view + "' where  md_url = '" + reqer.params.name.toString() + "'", async function (err, ressss) {
@@ -178,7 +182,7 @@ app.get('/manga/:name', function (reqer, reser) {
                 reqer.session.readedmanga_url.push(named);
 
             }
-            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
+            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
 
 
         } else {
@@ -195,7 +199,7 @@ app.get('/manga/:name', function (reqer, reser) {
                             status = $(".text-light").eq(1).text();
                             // console.log('https://www.anime-planet.com/manga/all?name='+title);
                             var titleed = title.replace(/ /g, '+');
-                            
+
                             request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
                                 try {
                                     if (!errorqqq & reqqq.statusCode == 200) {
@@ -210,8 +214,8 @@ app.get('/manga/:name', function (reqer, reser) {
                                                 console.log(tags);
                                                 con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (err, res) {
                                                 });
-                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
-    
+                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
+
                                             } else {
                                                 titleed = titleed.substr(0, titleed.length / 3);
                                                 request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
@@ -227,7 +231,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                                             console.log(tags);
                                                             con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
                                                                 if (sres) {
-                                                                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
+                                                                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
                                                                 }
                                                                 if (serr) {
                                                                     console.log(serr);
@@ -237,14 +241,14 @@ app.get('/manga/:name', function (reqer, reser) {
                                                             console.log('asdasdasdasdasdas2');
                                                             con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
                                                                 if (sres) {
-                                                                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session });
+                                                                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
                                                                 }
                                                                 if (serr) {
                                                                     console.log(serr);
                                                                 }
                                                             });
-    
-    
+
+
                                                         }
                                                     }
                                                 });
@@ -254,9 +258,9 @@ app.get('/manga/:name', function (reqer, reser) {
                                         }
                                     }
                                 } catch (error) {
-                                    
+
                                 }
-                                
+
                             });
                             var mangareaded = reqer.session.readedmanga_name;
                             if (mangareaded == undefined) {
@@ -342,14 +346,53 @@ app.get('/tags/:tags', function (reqer, reser) {
     }
 
     var start = (page - 1) * perpage;
-    con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%' limit "+start+" , "+perpage, async function (err, resquert) {
+    con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%' limit " + start + " , " + perpage, async function (err, resquert) {
         var lastPage = Math.ceil(resquert.length / perpage);
-        reser.render('list/manga_tags', { tags: resquert ,lastPage:lastPage});
+        reser.render('list/manga_tags', { tags: resquert, lastPage: lastPage });
 
     });
 });
 
 // AJAX 
+
+app.get('/ajax/detail/like/:name', async function(reqer,res){
+    
+});
+
+app.get('/ajax/detail/follow/:name', async function (reqer, res) {
+    var title = reqer.params.name;
+    var image = reqer.query.image;
+    var named = reqer.params.name.replace(/ /g, '-');
+    var mangareaded = reqer.session.follow_name;
+    if (mangareaded == undefined) {
+        reqer.session.follow_name = [];
+        reqer.session.follow_image = [];
+        reqer.session.follow_url = [];
+    }
+    if (reqer.session.follow_name.indexOf(title) >= 0) {
+        var ii = reqer.session.follow_name.indexOf(title);
+        reqer.session.follow_name.splice(reqer.session.follow_name.indexOf(title), 1);
+        reqer.session.follow_image.splice(reqer.session.follow_image.indexOf(image), 1);
+        reqer.session.follow_url.splice(ii, 1);
+    }
+    if (reqer.session.follow_name[reqer.session.follow_name.length - 1] != title) {
+        reqer.session.follow_name.push(title);
+        reqer.session.follow_image.push(image);
+        reqer.session.follow_url.push(named);
+    }
+    console.log(reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase());
+    con.query("SELECT * FROM manga_detail WHERE md_url = '" + reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase() + "'", function (err, resquert) {
+        if (resquert.length > 0) {
+            var follow = resquert[0].md_follow+1;
+            con.query("update manga_detail set md_follow = '" + follow + "' where  md_url = '" + reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase() + "'", async function (err, ressss) {
+                res.send('success');
+            });
+        }
+
+    });
+
+});
+
 
 app.get('/ajax/detail/changesize/:size', async function (req, res) {
     req.session.sizeImage = req.params.size;
