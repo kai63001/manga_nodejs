@@ -191,8 +191,8 @@
             </div>
         </div>
     </div>
-
-    <% if (session.follow_name.length > 0) { %>
+    
+    <% if (session.follow_name.length > 0 && session.follow_name != undefined) { %>
 
         <div class="container">
             <h4 style="float:left;">ที่ติดตาม</h4>
@@ -217,7 +217,7 @@
             </div>
         </div>
         <% } %>
-    <% if (session.readedmanga_name.length > 0) { %>
+    <% if (session.readedmanga_name.length > 0 &&session.readedmanga_name != undefined ) { %>
 
     <div class="container">
         <h4 style="float:left;">อ่านล่าสุด</h4>

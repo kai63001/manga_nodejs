@@ -119,14 +119,12 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="box" style="background-color: #1b1b1b;border-radius: 5px;padding:15px;color: white;">
-                        ชอบเรื่องนี้ : <%= like %> คน<br>
+                        ชอบเรื่องนี้ : <span id="like_val"><%= like %></span> คน<br>
                         ติดตามแล้ว : <span id="follow_val"><%= follow %></span> คน<br>
                         <br>
                         <div class="row">
-
-                            <div class="col-md-8" style="padding-right: 0px;">
-
-                                <% if (session.follow_name != undefined &&session.follow_name.includes(title)) { %>
+                            <div class="col-md-8">
+                                <% if (session.follow_name != undefined && session.follow_name.includes(title)) { %>
                                 <button class="btn btn-block btn-success" style="margin-top: 0px;">
                                     <i class="fas fa-check"></i> ติดตามแล้ว </button>
                                 <% }else{ %>
@@ -139,11 +137,21 @@
                                 <% } %>
                             </div>
                             <div class="col-md-4">
-                                <button class="btn btn-danger btn-block"><i class="fas fa-thumbs-up"></i></button>
+                                <% if (session.like_name != undefined && session.like_name.includes(name)) { %>
+                                <button class="btn btn-success btn-block" style="margin-top: 0px;"><i
+                                        class="fas fa-thumbs-up"></i></button>
+                                <% }else{ %>
+                                <button id="like" onclick="like()" class="btn btn-danger btn-block"><i
+                                        class="fas fa-thumbs-up"></i></button>
+
+                                <button id="like_success" class="btn btn-success btn-block" style="margin-top: 0px;"><i
+                                        class="fas fa-thumbs-up"></i></button>
+                                <% } %>
                             </div>
                         </div>
                         <br>
-                        <button class="btn btn-warning btn-block"> <i class="fas fa-flag"></i> รายงาน </button>
+                        <button type="button" class="btn btn-warning btn-block" data-toggle="modal"
+                            data-target="#exampleModal"> <i class="fas fa-flag"></i> รายงาน </button>
                     </div>
                 </div>
                 <div class="col-md-9">
@@ -205,6 +213,23 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     <script>
+        $('#like_success').hide();
+        function like() {
+            console.log('like');
+            var like_val = $('#like_val').html();
+            like_val = parseInt(like_val);
+            like_val += 1;
+            console.log(like_val.toString());
+
+            $.ajax({
+                url: "/ajax/detail/like/<%= name %>", success: function (result) {
+                    $('#like').hide();
+                    $('#like_success').show();
+                    $('#like_val').html(like_val.toString());
+                }
+            });
+        }
+
         $('#follow_success').hide();
 
         function follow() {
@@ -261,7 +286,38 @@
             }
         });
     </script>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true" style="border:0px !important;">
+        <div class="modal-dialog modal-dialog-centered" style="border:0px !important;" role="document">
+            <div class="modal-content" style="border:0px !important;">
+                <div class="modal-body" style="border:0px !important;">
+                    <h3>รายงาน</h3>
+                    <hr>
+                    <div>
+                        <input type="checkbox" id="report[lc]" name="report[lc]">
+                        <label for="report[lc]">มีลิขสิทธิ์ในไทยแล้ว</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="report[lc]" name="report[lc]">
+                        <label for="report[lc]">ไม่อนุญาตให้ นำไปลงเว็บไซต์นี้</label>
+                    </div>
+                    <label for="report[des]">รายละเอียด : </label>
+                    <textarea name="report[des]" id="report[des]" cols="30" rows="5" class="form-control"
+                        placeholder="asdas"></textarea>
+                    <br>
+                    <button class="btn btn-success" id="sendreport" style="float:right">ส่ง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#sendreport').click(function () {
+            
+        });
+    </script>
     <%- include('include/footer') %>
+
 </body>
 
 </html>

@@ -37,6 +37,9 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 365 * 5
     }
 }));
+app.use(express.urlencoded());
+
+app.use(express.json());
 
 var index_html;
 var bool_html = false;
@@ -65,6 +68,10 @@ app.get('/', function (req, reser) {
         req.session.readedmanga_name = [];
         req.session.readedmanga_image = [];
         req.session.readedmanga_url = [];
+    }
+
+    if (req.session.follow_name == undefined) {
+        req.session.follow_name = [];
     }
     reser.render('index', { session: req.session });
 });
@@ -138,6 +145,7 @@ app.get('/manga/:name', function (reqer, reser) {
     if (reqer.params.name.indexOf(' ') >= 0) {
         reser.redirect('/manga/' + reqer.params.name.replace(/ /g, '-'));
     }
+
     var named = reqer.params.name;
     var image = '';
     var title = '';
@@ -355,8 +363,27 @@ app.get('/tags/:tags', function (reqer, reser) {
 
 // AJAX 
 
-app.get('/ajax/detail/like/:name', async function(reqer,res){
+app.get('/ajax/detail/report',async function(req,res){
     
+});
+
+app.get('/ajax/detail/like/:name', async function (reqer, res) {
+    var title = reqer.params.name;
+    if (reqer.session.like_name == undefined) {
+        reqer.session.like_name = [];
+    }
+
+    reqer.session.like_name.push(title);
+    console.log(reqer.session.like_name);
+
+    con.query("SELECT * FROM manga_detail WHERE md_url = '" + reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase() + "'", function (err, resquert) {
+        if (resquert.length > 0) {
+            var like = resquert[0].md_like + 1;
+            con.query("update manga_detail set md_like = '" + like + "' where  md_url = '" + reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase() + "'", async function (err, ressss) {
+                res.send('success');
+            });
+        }
+    });
 });
 
 app.get('/ajax/detail/follow/:name', async function (reqer, res) {
@@ -368,6 +395,11 @@ app.get('/ajax/detail/follow/:name', async function (reqer, res) {
         reqer.session.follow_name = [];
         reqer.session.follow_image = [];
         reqer.session.follow_url = [];
+    }
+    if (reqer.session.follow_image == undefined) {
+        reqer.session.follow_image = [];
+        reqer.session.follow_url = [];
+        reqer.session.follow_name = [];
     }
     if (reqer.session.follow_name.indexOf(title) >= 0) {
         var ii = reqer.session.follow_name.indexOf(title);
@@ -383,7 +415,7 @@ app.get('/ajax/detail/follow/:name', async function (reqer, res) {
     console.log(reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase());
     con.query("SELECT * FROM manga_detail WHERE md_url = '" + reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase() + "'", function (err, resquert) {
         if (resquert.length > 0) {
-            var follow = resquert[0].md_follow+1;
+            var follow = resquert[0].md_follow + 1;
             con.query("update manga_detail set md_follow = '" + follow + "' where  md_url = '" + reqer.params.name.replace(/ /g, '-').toString().toLocaleLowerCase() + "'", async function (err, ressss) {
                 res.send('success');
             });
