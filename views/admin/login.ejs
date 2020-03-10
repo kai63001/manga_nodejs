@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonManga</title>
+    <link rel="shortcut icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Mitr&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
+    <style>
+        .card:hover {
+            background-size: 120% !important;
+        }
+    </style>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        .download-btn {
+            position: absolute;
+            top: 5px;
+            right: 25px;
+            color: white;
+            background-color: black;
+            padding: 3px 9px;
+            border-radius: 3px;
+            opacity: 0;
+            transition: 0.5s;
+            border: 0px;
+            text-decoration: none;
+        }
+
+        .download-btn:hover {
+            color: black;
+            background-color: white;
+        }
+
+        .btngro:hover .download-btn {
+            opacity: 1;
+        }
+
+        .page-item a {
+            position: relative;
+            display: block;
+            padding: .5rem .75rem;
+            margin-left: -1px;
+            line-height: 1.25;
+            color: #343a40;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+
+        }
+
+        .activepagi a {
+            text-decoration: none;
+            background-color: #343a40 !important;
+            color: white;
+            border-color: #343a40 !important;
+        }
+    </style>
+</head>
+
+
+<body
+    style="font-family: 'Mitr' !important;background: url('https://cdn.dribbble.com/users/648922/screenshots/6413054/cave.png');background-size: 100%;background-attachment: fixed;background-position: center;">
+    <div class="container h-100 d-flex justify-content-center">
+        <div class="my-auto" style="width: 400px;background:rgba(255, 255, 255);padding:50px;border-radius: 8px;">
+            <h1><strong>Shadow Form</strong></h1>
+            <br>
+            <label for="username">Username : </label>
+            <input type="text" id="username" class="form-control">
+            <label for="password">Password : </label>
+            <input type="password" id="password" class="form-control">
+            <br>
+            <button id="login" onclick="login()" class="btn btn-success float-right">Sign in</button>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script>
+        function login() {
+            console.log('asdas');
+            $('#login').text('กำลังตรวจสอบ...');
+            if ($('#username').val() == "" || $('#password').val() == "") {
+                alertify.set('notifier', 'position', 'top-right');
+                alertify.error('กรอกข้อมูลด้วย');
+                $('#login').text('Sign in');
+
+            } else {
+                $.post("/ajax/admin/login",
+                    {
+                        username: $('#username').val(),
+                        password: $('#password').val(),
+                    },
+                    function (data, status) {
+                        $('#login').text('Sign in');
+                        console.log(data);
+                        if (data == "success") {
+                            alertify.set('notifier', 'position', 'top-right');
+                            alertify.success('เข้าสู่ระบบสำเร็จ');
+                            setTimeout(function () {
+                                window.location.reload(); // you can pass true to reload function to ignore the client cache and reload from the server
+                            }, 2000);
+                        } else {
+                            alertify.set('notifier', 'position', 'top-right');
+                            alertify.error('เข้าสู่ระบบล้มเหลว');
+                        }
+                    });
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -191,7 +191,7 @@
             </div>
         </div>
     </div>
-    
+
     <% if (session.follow_name.length > 0 && session.follow_name != undefined) { %>
 
         <div class="container">
@@ -247,7 +247,7 @@
 
     <div class="container">
         <h4 style="float:left;">มาใหม่</h4>
-        <div style="float:right;margin-top: 5px;"><a href="/manga"
+        <div style="float:right;margin-top: 5px;"><a href="/manga/page/1"
                 style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
         </div>
         <div style="clear:both;"></div>
@@ -257,6 +257,9 @@
 
 
     <br>
+    <% for( let index = 1; index <= 172; index++ ) { %>
+        <a href="/manga/page/<%= index %>"></a>
+    <% } %>
     <ul id="pagination-demo" class="justify-content-center">
     </ul>
     <br>
@@ -296,7 +299,7 @@
             visiblePages: 5,
             initiateStartPageClick: true,
             hideOnlyOnePage: true,
-            href: 'manga/?page={{number}}',
+            href: 'manga/page/{{number}}',
             pageVariable: '{{page}}',
             totalPagesVariable: '{{total_pages}}',
             page: null,

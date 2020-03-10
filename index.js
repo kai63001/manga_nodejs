@@ -5,7 +5,9 @@ let express = require('express'),
     FileStore = require('session-file-store')(session),
     app = express();
 var mysql = require('mysql');
+const SitemapGenerator = require('sitemap-generator');
 const path = require("path");
+const bodyParser = require('body-parser')
 const port = 3000;
 
 var con = mysql.createConnection({
@@ -40,7 +42,8 @@ app.use(session({
 app.use(express.urlencoded());
 
 app.use(express.json());
-
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 var index_html;
 var bool_html = false;
 function getIndex() {
@@ -76,13 +79,13 @@ app.get('/', function (req, reser) {
     reser.render('index', { session: req.session });
 });
 
-app.get('/manga', function (reqer, reser) {
+app.get('/manga/page/:page', function (reqer, reser) {
     var image = [];
     var name = [];
     var ep = [];
     var url = [];
     var lastPage = 100;
-    var page = reqer.query.page;
+    var page = reqer.params.page;
     if (!page) {
         page = 1;
     }
@@ -361,10 +364,57 @@ app.get('/tags/:tags', function (reqer, reser) {
     });
 });
 
-// AJAX 
 
-app.get('/ajax/detail/report',async function(req,res){
-    
+// ADMIN
+
+app.get('/_moonlightshadow', async function (req, res) {
+    console.log(req.session.admin);
+    if (req.session.admin != undefined) {
+        res.render('admin/admin');
+    } else {
+        res.render('admin/login');
+    }
+});
+
+// AJAX 
+app.post('/ajax/admin/login', async function (req, res) {
+    console.log(req.body.username);
+    console.log(req.body.password);
+    con.query("SELECT * FROM admon WHERE a_username = '" + req.body.username + "' AND a_password = '" + req.body.password + "'", function (error, resq) {
+        if (resq.length > 0) {
+            req.session.admin = '1';
+            res.send('success');
+        } else {
+            res.send('error');
+
+        }
+    });
+});
+
+app.post('/ajax/detail/report/:name', async function (req, res) {
+    var type = [];
+    var name = req.params.name;
+    console.log(req.body.des);
+    console.log(req.body.lc);
+    console.log(req.body.removeit);
+    console.log(req.body.other);
+    var des = req.body.des;
+    if (req.body.lc == "true") {
+        type.push(1);
+    }
+    if (req.body.removeit == "true") {
+        type.push(2);
+    }
+    if (req.body.other == "true") {
+        type.push(3);
+    }
+    console.log('type :' + type);
+    if (type != 0) {
+        con.query("INSERT INTO report (r_url,r_type,r_des) VALUES ('" + name + "','" + type + "','" + des + "')", function (err, res) {
+
+        });
+    }
+    res.send('sadas');
 });
 
 app.get('/ajax/detail/like/:name', async function (reqer, res) {
@@ -605,7 +655,23 @@ app.get('/ajax/index/updateall', async function (req, reser) {
     }
 });
 
+app.get('/sitemap_get', function (req, res) {
+    // create generator
+    var generator = SitemapGenerator('https://fc0ce971.ngrok.io', {
+        maxDepth: 0,
+        maxEntriesPerFile: 50000,
+        stripQuerystring: true
+    });
 
+    // register event listeners
+    generator.on('done', () => {
+        console.log('finish');
+        res.send('finsish');
+    });
+
+    // start the crawler
+    generator.start();
+})
 
 app.listen(port, function () {
     console.log(`Runnn progame at port : ${port}!`);

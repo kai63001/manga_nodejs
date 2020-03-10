@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "alertifyjs": "^1.13.1",
     "body-parser": "^1.19.0",
     "cheerio": "^1.0.0-rc.3",
     "ejs": "^3.0.1",
@@ -19,6 +20,8 @@
     "path": "^0.12.7",
     "request": "^2.88.2",
     "session-file-store": "^1.4.0",
+    "sitemap": "^6.0.0",
+    "sitemap-generator": "^8.4.2",
     "translate": "^1.1.1"
   }
 }

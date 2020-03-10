@@ -35,7 +35,12 @@
             color: #1b1b1b;
         }
     </style>
-
+    <!-- include a theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+    <!-- Semantic UI theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
 </head>
 
 <body style="font-family: 'Mitr' !important;">
@@ -212,6 +217,9 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+
     <script>
         $('#like_success').hide();
         function like() {
@@ -294,28 +302,59 @@
                     <h3>รายงาน</h3>
                     <hr>
                     <div>
-                        <input type="checkbox" id="report[lc]" name="report[lc]">
-                        <label for="report[lc]">มีลิขสิทธิ์ในไทยแล้ว</label>
+                        <input type="checkbox" id="lc" name="lc">
+                        <label for="lc">มีลิขสิทธิ์ในไทยแล้ว <span style="color:red;">(ทางเราจะช่วยโปรโมท และ
+                                นำเรื่องนี้ออกทันที)</span></label>
                     </div>
                     <div>
-                        <input type="checkbox" id="report[lc]" name="report[lc]">
-                        <label for="report[lc]">ไม่อนุญาตให้ นำไปลงเว็บไซต์นี้</label>
+                        <input type="checkbox" id="removeit" name="removeit">
+                        <label for="removeit">ไม่อนุญาตให้ นำไปลงเว็บไซต์นี้</label>
                     </div>
-                    <label for="report[des]">รายละเอียด : </label>
-                    <textarea name="report[des]" id="report[des]" cols="30" rows="5" class="form-control"
-                        placeholder="asdas"></textarea>
+                    <div>
+                        <input type="checkbox" id="other" name="other">
+                        <label for="other">อื่นๆ</label>
+                    </div>
+                    <label for="des">รายละเอียด : </label>
+                    <textarea name="des" id="des" cols="30" rows="5" class="form-control"
+                        placeholder="เช่น ถ้ามี ลิขสิทธิ์ ในไทยแล้วให้นำชื่อ บริษัท หรือ url เว็บไซต์ของคุณทางเราจะช่วยในการโปรโมทให้"></textarea>
                     <br>
-                    <button class="btn btn-success" id="sendreport" style="float:right">ส่ง</button>
+                    <button class="btn btn-success" type="submit" id="clickrun" onclick="sendr()"
+                        style="float:right">ส่ง</button>
+                    <script>
+                        function sendr() {
+                            console.log('asdas');
+                            $('#clickrun').text('กำลังส่ง...');
+                            if ($('#des').val() == "") {
+                                alertify.set('notifier', 'position', 'top-right');
+                                alertify.error('กรุณาเขียนอธิบาย');
+                            } else if ($('#lc').prop('checked') == false && $('#removeit').prop('checked') == false && $('#other').prop('checked') == false) {
+                                alertify.set('notifier', 'position', 'top-right');
+                                alertify.error('กรุณาเลื่อกหัวข้อในการรายงาน');
+                            } else {
+                                $.post("/ajax/detail/report/<%= name %>",
+                                    {
+                                        des: $('#des').val(),
+                                        lc: $('#lc').prop('checked'),
+                                        removeit: $('#removeit').prop('checked'),
+                                        other: $('#other').prop('checked'),
+                                    },
+                                    function (data, status) {
+                                        alertify.set('notifier', 'position', 'top-right');
+                                        alertify.success('ส่งรายงานเรียนร้อยแล้ว รอการสรวจสอบ');
+                                        $('#exampleModal').modal('hide');
+                                        $('#clickrun').text('ส่ง');
+
+                                        // alert("Data: " + data + "\nStatus: " + status);
+                                    });
+                            }
+                        }
+                    </script>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        $('#sendreport').click(function () {
-            
-        });
-    </script>
+
     <%- include('include/footer') %>
 
 </body>
