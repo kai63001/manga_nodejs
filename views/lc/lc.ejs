@@ -72,17 +72,10 @@
 
 
 <body
-    style="font-family: 'Mitr' !important;background: url('https://cdn.dribbble.com/users/648922/screenshots/6413054/cave.png');background-size: 100%;background-attachment: fixed;background-position: center;">
+    style="font-family: 'Mitr' !important;background: #1b1b1b;background-size: 100%;background-attachment: fixed;background-position: center;">
     <div class="container h-100 d-flex justify-content-center">
-        <div class="my-auto" style="width: 400px;background:rgba(255, 255, 255);padding:50px;border-radius: 8px;">
-            <h1><strong>Shadow Form</strong></h1>
-            <br>
-            <label for="username">Username : </label>
-            <input type="text" id="username" class="form-control">
-            <label for="password">Password : </label>
-            <input type="password" id="password" class="form-control">
-            <br>
-            <button id="login" onclick="login()" class="btn btn-success float-right">Sign in</button>
+        <div class="my-auto" style="width: 700px;padding:50px;border-radius: 8px;color:white">
+            <%- req[0].lc_des %> 
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -94,37 +87,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-    <script>
-        function login() {
-            console.log('asdas');
-            $('#login').text('กำลังตรวจสอบ...');
-            if ($('#username').val() == "" || $('#password').val() == "") {
-                alertify.set('notifier', 'position', 'top-right');
-                alertify.error('กรอกข้อมูลด้วย');
-                $('#login').text('Sign in');
-            } else {
-                $.post("/ajax/admin/login",
-                    {
-                        username: $('#username').val(),
-                        password: $('#password').val(),
-                    },
-                    function (data, status) {
-                        $('#login').text('Sign in');
-                        console.log(data);
-                        if (data == "success") {
-                            alertify.set('notifier', 'position', 'top-right');
-                            alertify.success('เข้าสู่ระบบสำเร็จ');
-                            setTimeout(function () {
-                                window.location.reload(); // you can pass true to reload function to ignore the client cache and reload from the server
-                            }, 2000);
-                        } else {
-                            alertify.set('notifier', 'position', 'top-right');
-                            alertify.error('เข้าสู่ระบบล้มเหลว');
-                        }
-                    });
-            }
-        }
-    </script>
+
 </body>
 
 </html>

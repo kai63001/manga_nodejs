@@ -77,6 +77,28 @@
         <div class="row">
             <div class="col-md-4">
                 <h4>REPORT</h4>
+                <% for( let i = 0; i < req.length; i++ ) { %>
+                <div class="" style="background:white;color:black;padding:15px;">
+                    <%= req[i].r_url %>
+                    <br>
+                    <p><%= req[i].r_type %> </p>
+                    <p><%= req[i].r_des %> </p>
+                </div>
+                <br>
+                <% } %>
+            </div>
+            <div class="col-md-4">
+                <h4>LC ADD</h4>
+                <div class="" style="background:white;color:black;padding:15px;">
+                    url :
+                    <input id="lc_url" type="text" class="form-control">
+                    des :
+                    <textarea name="lc_des" id="lc_des" cols="30" rows="5" class="form-control"></textarea>
+                    <br>
+                    <button id="sendlcbtn" onclick="sendlc()" class="btn btn-success float-right">ส่งข้อมูล</button>
+                    <br>
+                    <br>
+                </div>
             </div>
         </div>
     </div>
@@ -90,7 +112,31 @@
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-
+    <script>
+        function sendlc() {
+            $('#sendlcbtn').text('กำลังส่ง...');
+            if ($('#lc_des').val() == "" || $('#lc_url').val() == "") {
+                alertify.set('notifier', 'position', 'top-right');
+                alertify.error('กรุณาเขียนอธิบาย');
+            }else {
+                $.post("/ajax/admin/sendlc",
+                    {
+                        lc_des: $('#lc_des').val(),
+                        lc_url: $('#lc_url').val(),
+                        
+                    },
+                    function (data, status) {
+                        alertify.set('notifier', 'position', 'top-right');
+                        alertify.success('เพิ่ม lc success');
+                        $('#exampleModal').modal('hide');
+                        $('#sendlcbtn').text('ส่งข้อมูล');
+                        $('#lc_des').val(''),
+                        $('#lc_url').val(''),
+                        // alert("Data: " + data + "\nStatus: " + status);
+                    });
+            }
+        }
+    </script>
 </body>
 
 </html>

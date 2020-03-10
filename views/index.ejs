@@ -63,7 +63,7 @@
 
 <body style="font-family: 'Mitr' !important;">
     <%- include('include/nav_index') %>
-    <div class="container" id="ontoper">
+    <!-- <div class="container" id="ontoper">
         <div class="row">
             <div class="col-md-6" style="padding-right: 5px;">
                 <div class="box"
@@ -90,7 +90,7 @@
         </div>
         <br>
 
-    </div>
+    </div> -->
     <div class="container">
         <div class="row">
             <div class="col-md-8">
@@ -99,124 +99,135 @@
             </div>
             <div class="col-md-4">
                 <h4><b>เป็นที่นิยม</b></h4>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-4 col-4">
-                                <div class="box"
-                                    style="background:url('https://www.easybranches.com/feed/uploads/2020/01/d84d82a9b726e3401420530b4c0675b1.jpg');background-size: cover;background-position: center; height: 70px;width: 100px;border-radius: 8px;">
-                                    <span class="badge badge-danger"
-                                        style="position: absolute;top:0px;border-radius: 3px 0px 0px 0px;">1</span>
-
+                <a href="/manga/<%= req[0].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4 col-4">
+                                    <div class="box"
+                                        style="background:url('<%= req[0].md_image %>');background-size: cover;background-position: top; height: 70px;width: 100px;border-radius: 8px;">
+                                        <span class="badge badge-danger"
+                                            style="position: absolute;top:0px;border-radius: 3px 0px 0px 0px;">1</span>
+                                    </div>
                                 </div>
-
+                                <div class="col-md-7 col-7"
+                                    style="margin-left: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                                    <%= req[0].md_name %>
+                                </div>
                             </div>
-                            <div class="col-md-7 col-7"
-                                style="margin-left: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                Solo Leveling
-                            </div>
+                </a>
+                <a href="/manga/<%= req[1].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-1 col-1">
+                            <span class="badge badge-warning"
+                                style="border-radius: 3px;margin-top:7px;color: white;">2</span>
                         </div>
-                        <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1 col-1">
-                                <span class="badge badge-warning"
-                                    style="border-radius: 3px;margin-top:7px;color: white;">2</span>
-                            </div>
-                            <div class="col-md-10 col-10"
-                                style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                Kage no Jitsuryoku
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1 col-1">
-                                <span class="badge badge-success"
-                                    style="border-radius: 3px;margin-top:7px;color: white;">3</span>
-                            </div>
-                            <div class="col-md-10 col-10"
-                                style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                Strongest Worker
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1 col-1">
-                                <span class="badge badge-light"
-                                    style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">4</span>
-                            </div>
-                            <div class="col-md-10 col-10"
-                                style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                Tomb of King
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1 col-1">
-                                <span class="badge badge-light"
-                                    style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">5</span>
-                            </div>
-                            <div class="col-md-10 col-10"
-                                style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                Rise of The Demon King
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1 col-1">
-                                <span class="badge badge-light"
-                                    style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">6</span>
-                            </div>
-                            <div class="col-md-10 col-10"
-                                style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                Metropolitan Supremacy System
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1 col-1">
-                                <span class="badge badge-light"
-                                    style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">7</span>
-                            </div>
-                            <div class="col-md-10 col-10"
-                                style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                The Second Coming of Gluttony
-                            </div>
-                        </div>
-                        <div class="row" style="padding-top: 5px;">
-                            <div class="col-md-1 col-1">
-                                <span class="badge badge-light"
-                                    style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">8</span>
-                            </div>
-                            <div class="col-md-10 col-10"
-                                style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                                I Have Dragon on My Body
-                            </div>
+                        <div class="col-md-10 col-10"
+                            style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <%= req[1].md_name %>
                         </div>
                     </div>
-                </div>
+                </a>
+                <a href=" /manga/<%= req[2].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-1 col-1">
+                            <span class="badge badge-success"
+                                style="border-radius: 3px;margin-top:7px;color: white;">3</span>
+                        </div>
+                        <div class="col-md-10 col-10"
+                            style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <%= req[2].md_name %> </div>
+                    </div>
+                </a>
+                <a href="/manga/<%= req[3].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-1 col-1">
+                            <span class="badge badge-light"
+                                style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">4</span>
+                        </div>
+                        <div class="col-md-10 col-10"
+                            style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <%= req[3].md_name %>
+                        </div>
+                    </div>
+                </a>
+                <a href=" /manga/<%= req[4].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-1 col-1">
+                            <span class="badge badge-light"
+                                style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">5</span>
+                        </div>
+                        <div class="col-md-10 col-10"
+                            style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <%= req[4].md_name %> </div>
+                    </div>
+                </a>
+                <a href="/manga/<%= req[5].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-1 col-1">
+                            <span class="badge badge-light"
+                                style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">6</span>
+                        </div>
+                        <div class="col-md-10 col-10"
+                            style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <%= req[5].md_name %>
+                        </div>
+                    </div>
+                </a>
+                <a href=" /manga/<%= req[6].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-1 col-1">
+                            <span class="badge badge-light"
+                                style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">7</span>
+                        </div>
+                        <div class="col-md-10 col-10"
+                            style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <%= req[6].md_name %> </div>
+                    </div>
+                </a>
+                <a href="/manga/<%= req[7].md_url %>" style="text-decoration:none;color:#1b1b1b;">
+                    <div class="row" style="padding-top: 5px;">
+                        <div class="col-md-1 col-1">
+                            <span class="badge badge-light"
+                                style="border-radius: 3px;margin-top:7px;color: white;background-color: gray;">8</span>
+                        </div>
+                        <div class="col-md-10 col-10"
+                            style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                            <%= req[7].md_name %>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
     <% if (session.follow_name.length > 0 && session.follow_name != undefined) { %>
 
-        <div class="container">
-            <h4 style="float:left;">ที่ติดตาม</h4>
-            <div style="float:right;margin-top: 5px;"><a href="" style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
-            </div>
-            <div style="clear:both;"></div>
-            <div class="row">
-                <% for( let i = session.follow_name.length -1; i > session.follow_name.length -7; i-- ) { %>
-                <% if (session.follow_image[i]) { %>
-                <div class="col-md-2 col-6" style="padding-right: 0px;">
-                    <a href="manga/<%= session.follow_url[i] %>" style="text-decoration: none;color: #130C11;">
-                        <div class="card"
-                            style="background:url('<%= session.follow_image[i] %>');background-size: cover;background-position: center; height: 240px;width: 100%;border-radius: 4px;">
-                        </div>
-                        <p style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                            <strong> <%= session.follow_name[i] %> </strong><br>
-                        </p>
-                    </a>
-                </div>
-                <% } %>
-                <% } %>
-            </div>
+    <div class=" container">
+        <h4 style="float:left;">ที่ติดตาม</h4>
+        <div style="float:right;margin-top: 5px;"><a href="" style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
         </div>
-        <% } %>
+        <div style="clear:both;"></div>
+        <div class="row">
+            <% for( let i = session.follow_name.length -1; i > session.follow_name.length -7; i-- ) { %>
+            <% if (session.follow_image[i]) { %>
+            <div class="col-md-2 col-6" style="padding-right: 0px;">
+                <a href="manga/<%= session.follow_url[i] %>" style="text-decoration: none;color: #130C11;">
+                    <div class="card"
+                        style="background:url('<%= session.follow_image[i] %>');background-size: cover;background-position: center; height: 240px;width: 100%;border-radius: 4px;">
+                    </div>
+                    <p style="margin-top: 5px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                        <strong> <%= session.follow_name[i] %> </strong><br>
+                    </p>
+                </a>
+            </div>
+            <% } %>
+            <% } %>
+        </div>
+    </div>
+    <% } %>
     <% if (session.readedmanga_name.length > 0 &&session.readedmanga_name != undefined ) { %>
 
     <div class="container">
@@ -258,7 +269,7 @@
 
     <br>
     <% for( let index = 1; index <= 172; index++ ) { %>
-        <a href="/manga/page/<%= index %>"></a>
+    <a href="/manga/page/<%= index %>"></a>
     <% } %>
     <ul id="pagination-demo" class="justify-content-center">
     </ul>
@@ -270,7 +281,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
 
     <script>
         var md = new MobileDetect(window.navigator.userAgent);
