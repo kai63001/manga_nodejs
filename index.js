@@ -18,6 +18,7 @@ var con = mysql.createConnection({
 });
 
 
+
 con.connect();
 
 app.set("views", path.join(__dirname, "views"));
@@ -64,6 +65,28 @@ getIndex();
 setInterval(getIndex, 300000);
 
 
+// app.get('/gettags', function (reqer, reser) {
+//     var page = [];
+//     for (var i = 1; i <= 16; i++) {
+//         page.push(i);
+//     }
+//     for (i in page) {
+//         request('https://www.anime-planet.com/manga/tags?sort=num_likes&order=desc&page=' + i, function (error, res, html) {
+//             if (!error & res.statusCode == 200) {
+//                 var $ = cheerio.load(html);
+//                 for (var s = 0; s < 35; s++) {
+//                     con.query("INSERT INTO tags (t_name) VALUES ('" + $("h2.collectionName").eq(s).children("a").text() + "')", function (error, req) {
+
+//                     });
+//                 }
+//             }
+//         });
+//     }
+//     reser.send('das');
+// });
+
+
+
 app.get('/', function (req, reser) {
     // reser.send(req.session.text);
     var mangareaded = req.session.readedmanga_name;
@@ -77,9 +100,42 @@ app.get('/', function (req, reser) {
         req.session.follow_name = [];
     }
     con.query("SELECT * FROM manga_detail ORDER BY md_view DESC LIMIT 10", function (error, reqd) {
-        reser.render('index', { session: req.session ,req:reqd});
+        reser.render('index', { session: req.session, req: reqd });
 
     });
+});
+
+
+app.get('/manga/follow', function (reqer, reser) {
+    var mangareaded = reqer.session.readedmanga_name;
+    if (mangareaded == undefined) {
+        reqer.session.readedmanga_name = [];
+        reqer.session.readedmanga_image = [];
+        reqer.session.readedmanga_url = [];
+    }
+
+    if (reqer.session.follow_name == undefined) {
+        reqer.session.follow_name = [];
+    }
+    reser.render('list/manga_follow', { session: reqer.session });
+});
+
+app.get('/manga/readed', function (reqer, reser) {
+    var mangareaded = reqer.session.readedmanga_name;
+    if (mangareaded == undefined) {
+        reqer.session.readedmanga_name = [];
+        reqer.session.readedmanga_image = [];
+        reqer.session.readedmanga_url = [];
+    }
+
+    if (reqer.session.follow_name == undefined) {
+        reqer.session.follow_name = [];
+    }
+    reser.render('list/manga_readed', { session: reqer.session });
+});
+
+app.get('/manga',function(req,res){
+    res.redirect('/manga/page/1');
 });
 
 app.get('/manga/page/:page', function (reqer, reser) {
@@ -136,6 +192,24 @@ app.get('/manga/page/:page', function (reqer, reser) {
         });
     }
 
+});
+
+app.get('/tags', function (reqer, reser) {
+
+    var perpage = 50;
+    var page;
+    if (reqer.query.page) {
+        page = reqer.query.page;
+    } else {
+        page = 1;
+    }
+
+    var start = (page - 1) * perpage;
+    con.query("SELECT * FROM tags ORDER BY t_id DESC limit " + start + " , " + perpage, async function (err, resquert) {
+        var lastPage = Math.ceil(resquert.length / perpage);
+        reser.render('list/tags', { tags: resquert, lastPage: lastPage });
+
+    });
 });
 
 app.get('/manga/:name', function (reqer, reser) {
@@ -366,7 +440,7 @@ app.get('/manga/:name/read/:ep', function (reqer, reser) {
 
 app.get('/tags/:tags', function (reqer, reser) {
 
-    var perpage = 25;
+    var perpage = 24;
     var page;
     if (reqer.query.page) {
         page = reqer.query.page;
@@ -375,13 +449,25 @@ app.get('/tags/:tags', function (reqer, reser) {
     }
 
     var start = (page - 1) * perpage;
-    con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%' limit " + start + " , " + perpage, async function (err, resquert) {
-        var lastPage = Math.ceil(resquert.length / perpage);
-        reser.render('list/manga_tags', { tags: resquert, lastPage: lastPage });
-
+    con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%'", async function (err, resquerter) {
+        con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%' limit " + start + " , " + perpage, async function (err, resquert) {
+            var lastPage = Math.ceil(resquerter.length / perpage);
+            reser.render('list/manga_tags', { tags: resquert, lastPage: lastPage, name: reqer.params.tags });
+        });
     });
+
 });
 
+app.get('/dmca', function (reqer, reser) {
+    reser.render('footer/dmca');
+});
+
+app.get('/term', function (reqer, reser) {
+    reser.render('footer/term');
+});
+app.get('/privacy', function (reqer, reser) {
+    reser.render('footer/privacy');
+});
 
 // ADMIN
 
@@ -704,6 +790,9 @@ app.get('/sitemap_get', function (req, res) {
     generator.start();
 })
 
+app.get('*', function (req, res) {
+    res.status(404).render('404');
+});
 app.listen(port, function () {
     console.log(`Runnn progame at port : ${port}!`);
 });
