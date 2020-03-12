@@ -100,6 +100,19 @@
                     <br>
                 </div>
             </div>
+            <div class="col-md-4">
+                <h4>SETTING ADD</h4>
+                <div class="" style="background:white;color:black;padding:15px;">
+                    header :
+                    <textarea name="s_header" id="s_header" cols="30" rows="5" class="form-control"><%- header %> </textarea>
+                    footer :
+                    <textarea name="s_footer" id="s_footer" cols="30" rows="5" class="form-control"><%- footer %></textarea>
+                    <br>
+                    <button id="sendsbtn" onclick="sends()" class="btn btn-success float-right">ส่งข้อมูล</button>
+                    <br>
+                    <br>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -113,6 +126,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mobile-detect/1.4.4/mobile-detect.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
     <script>
+        function sends() {
+            $('#sendsbtn').text('กำลังส่ง...');
+            if ($('#s_header').val() == "" || $('#s_footer').val() == "") {
+                alertify.set('notifier', 'position', 'top-right');
+                alertify.error('กรุณาเขียนอธิบาย');
+            }else {
+                console.log($('#s_header').val());
+                $.post("/ajax/admin/sends",
+                    {
+                        s_header: $('#s_header').val(),
+                        s_footer: $('#s_footer').val(),
+                        
+                    },
+                    function (data, status) {
+                        alertify.set('notifier', 'position', 'top-right');
+                        alertify.success('update setting success');
+                        $('#exampleModal').modal('hide');
+                        $('#sendsbtn').text('ส่งข้อมูล');
+                        // alert("Data: " + data + "\nStatus: " + status);
+                    });
+            }
+        }
+
         function sendlc() {
             $('#sendlcbtn').text('กำลังส่ง...');
             if ($('#lc_des').val() == "" || $('#lc_url').val() == "") {
@@ -130,8 +166,8 @@
                         alertify.success('เพิ่ม lc success');
                         $('#exampleModal').modal('hide');
                         $('#sendlcbtn').text('ส่งข้อมูล');
-                        $('#lc_des').val(''),
-                        $('#lc_url').val(''),
+                        $('#lc_des').val('');
+                        $('#lc_url').val('');
                         // alert("Data: " + data + "\nStatus: " + status);
                     });
             }

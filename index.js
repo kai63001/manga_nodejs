@@ -21,6 +21,10 @@ var con = mysql.createConnection({
 
 con.connect();
 
+var header = '';
+var footer = '';
+
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
@@ -50,6 +54,10 @@ var bool_html = false;
 function getIndex() {
     console.log('getindex');
     try {
+        con.query("SELECT * FROM setting WHERE s_id = '1'", function (error, res) {
+            header = res[0].s_header;
+            footer = res[0].s_footer;
+        });
         request('https://cumanga.com/', function (error, req, html) {
             if (!error & req.statusCode == 200) {
                 index_html = html;
@@ -64,6 +72,10 @@ function getIndex() {
 getIndex();
 setInterval(getIndex, 300000);
 
+con.query("SELECT * FROM setting WHERE s_id = '1'", function (error, res) {
+    header = res[0].s_header;
+    footer = res[0].s_footer;
+});
 
 // app.get('/gettags', function (reqer, reser) {
 //     var page = [];
@@ -85,9 +97,11 @@ setInterval(getIndex, 300000);
 //     reser.send('das');
 // });
 
-
-
 app.get('/', function (req, reser) {
+    con.query("SELECT * FROM setting WHERE s_id = '1'", function (error, res) {
+        header = res[0].s_header;
+        footer = res[0].s_footer;
+    });
     // reser.send(req.session.text);
     var mangareaded = req.session.readedmanga_name;
     if (mangareaded == undefined) {
@@ -100,7 +114,7 @@ app.get('/', function (req, reser) {
         req.session.follow_name = [];
     }
     con.query("SELECT * FROM manga_detail ORDER BY md_view DESC LIMIT 10", function (error, reqd) {
-        reser.render('index', { session: req.session, req: reqd });
+        reser.render('index', { session: req.session, req: reqd, header: header, footer: footer });
 
     });
 });
@@ -117,7 +131,7 @@ app.get('/manga/follow', function (reqer, reser) {
     if (reqer.session.follow_name == undefined) {
         reqer.session.follow_name = [];
     }
-    reser.render('list/manga_follow', { session: reqer.session });
+    reser.render('list/manga_follow', { session: reqer.session, header: header, footer: footer });
 });
 
 app.get('/manga/readed', function (reqer, reser) {
@@ -131,10 +145,10 @@ app.get('/manga/readed', function (reqer, reser) {
     if (reqer.session.follow_name == undefined) {
         reqer.session.follow_name = [];
     }
-    reser.render('list/manga_readed', { session: reqer.session });
+    reser.render('list/manga_readed', { session: reqer.session, header: header, footer: footer });
 });
 
-app.get('/manga',function(req,res){
+app.get('/manga', function (req, res) {
     res.redirect('/manga/page/1');
 });
 
@@ -162,7 +176,7 @@ app.get('/manga/page/:page', function (reqer, reser) {
                         url[i] = $('.col-6').eq(i).attr("href");
                         lastPage = $('select').eq(0).children().length;
                     }
-                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage });
+                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage, header: header, footer: footer });
                 } catch (error) {
                     console.log(error);
                 }
@@ -184,7 +198,7 @@ app.get('/manga/page/:page', function (reqer, reser) {
                     }
 
                     console.log(name);
-                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage });
+                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage, header: header, footer: footer });
                 } catch (error) {
                     console.log(error);
                 }
@@ -207,7 +221,7 @@ app.get('/tags', function (reqer, reser) {
     var start = (page - 1) * perpage;
     con.query("SELECT * FROM tags ORDER BY t_id DESC limit " + start + " , " + perpage, async function (err, resquert) {
         var lastPage = Math.ceil(resquert.length / perpage);
-        reser.render('list/tags', { tags: resquert, lastPage: lastPage });
+        reser.render('list/tags', { tags: resquert, lastPage: lastPage, header: header, footer: footer });
 
     });
 });
@@ -274,7 +288,7 @@ app.get('/manga/:name', function (reqer, reser) {
                         reqer.session.readedmanga_url.push(named);
 
                     }
-                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
+                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
 
 
                 } else {
@@ -306,7 +320,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                                         console.log(tags);
                                                         con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (err, res) {
                                                         });
-                                                        reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
+                                                        reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
 
                                                     } else {
                                                         titleed = titleed.substr(0, titleed.length / 3);
@@ -323,7 +337,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                                                     console.log(tags);
                                                                     con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
                                                                         if (sres) {
-                                                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
+                                                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
                                                                         }
                                                                         if (serr) {
                                                                             console.log(serr);
@@ -333,7 +347,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                                                     console.log('asdasdasdasdasdas2');
                                                                     con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
                                                                         if (sres) {
-                                                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like });
+                                                                            reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
                                                                         }
                                                                         if (serr) {
                                                                             console.log(serr);
@@ -426,7 +440,7 @@ app.get('/manga/:name/read/:ep', function (reqer, reser) {
                         $('img').each(function (i, elem) {
                             image[i] = $(this).attr('src');
                         });
-                        reser.render('detail/read', { title: reqer.params.name.replace(/-/g, ' '), ep: reqer.params.ep, image: image, name: reqer.params.name, session: reqer.session });
+                        reser.render('detail/read', { title: reqer.params.name.replace(/-/g, ' '), ep: reqer.params.ep, image: image, name: reqer.params.name, session: reqer.session, header: header, footer: footer });
                     }
                 });
             } catch (error) {
@@ -452,7 +466,7 @@ app.get('/tags/:tags', function (reqer, reser) {
     con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%'", async function (err, resquerter) {
         con.query("SELECT * FROM manga_detail WHERE md_tags LIKE '%" + reqer.params.tags.toString() + "%' limit " + start + " , " + perpage, async function (err, resquert) {
             var lastPage = Math.ceil(resquerter.length / perpage);
-            reser.render('list/manga_tags', { tags: resquert, lastPage: lastPage, name: reqer.params.tags });
+            reser.render('list/manga_tags', { tags: resquert, lastPage: lastPage, name: reqer.params.tags, header: header, footer: footer });
         });
     });
 
@@ -475,7 +489,7 @@ app.get('/_moonlightshadow', async function (req, res) {
     console.log(req.session.admin);
     if (req.session.admin != undefined) {
         con.query("SELECT * FROM report ORDER BY r_id DESC LIMIT 6", function (error, req) {
-            res.render('admin/admin', { req: req });
+            res.render('admin/admin', { req: req, header: header, footer: footer });
         });
     } else {
         res.render('admin/login');
@@ -483,6 +497,19 @@ app.get('/_moonlightshadow', async function (req, res) {
 });
 
 // AJAX 
+app.post('/ajax/admin/sends', async function (req, res) {
+    if (req.session.admin != undefined) {
+        console.log(req.body.s_header);
+        console.log(req.body.s_footer);
+        con.query("UPDATE setting SET s_header = '" + req.body.s_header.replace(/'/g, '"') + "' , s_footer = '" + req.body.s_footer.replace(/'/g, '"') + "' WHERE s_id = '1'", function (error, resq) {
+            console.log(error);
+            res.send('success');
+        });
+    } else {
+        res.render('admin/login');
+    }
+});
+
 
 app.post('/ajax/admin/sendlc', async function (req, res) {
     if (req.session.admin != undefined) {

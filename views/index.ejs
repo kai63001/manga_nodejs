@@ -3,13 +3,39 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta content="th" http-equiv="content-language" />
+    <meta content="th" name="geo.country" />
+    <meta content="Thailand" name="geo.placename" />
+    <link rel="alternate" href="https://www.moonsmanga.com/" hreflang="th" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoonManga อ่านมังงะ ฟรี แปลไทย ครบทุกตอน อ่านการ์ตูน</title>
+    <title>MoonManga เว็บอ่านมังงะ ฟรี แปลไทย ครบทุกตอน อ่านการ์ตูน</title>
+    <meta name="description"
+        content="moonsmanga เว็บอ่านการ์ตูนออนไลน์ อ่านมังงะ manga แปลไทย มือถือ แอพอ่านการ์ตูน android ios iphone ipad การ์ตูนอัพเดทใหม่ทุกวัน มังฮวา">
+    <meta name="keywords"
+        content="อ่านการ์ตูน, เว็บอ่านการ์ตูน, มังงะ, มังงะแปลไทย,manga,อ่านการ์ตูนออนไลน์, แอพอ่านการ์ตูน, มือถือ,อ่านโทรศัพย์, อ่านการ์ตูน,มังฮวา">
+    <link rel="icon" href="https://www.moonsmanga.com/views/views/favicon.ico">
+    <link rel="apple-touch-icon" href="https://www.moonsmanga.com/views/views/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" href="https://www.moonsmanga.com/views/views/favicon.ico">
+
+    <meta name="robots" content="noodp,noydir,index,follow,noarchive" />
+    <meta property="og:locale" content="th_TH" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="www.moonsmanga.com" />
+    <meta property="article:publisher" content="https://www.facebook.com/box.manga.page" />
+    <meta property="fb:app_id" content="153313228407799" />
+
+    <meta property="og:title"
+        content="อ่านการ์ตูน เว็บอ่านการ์ตูน อ่านการ์ตูนออนไลน์ อ่านมังงะ manga แปลไทย - moonsmanga.com" />
+    <meta property="og:description"
+        content="MoonsManga เว็บอ่านการ์ตูนออนไลน์ อ่านมังงะ manga แปลไทย app แอพอ่านการ์ตูน android ios iphone ipad การ์ตูนอัพเดทใหม่ทุกวัน" />
+    <meta property="og:url" content="https://www.moonsmanga.com/" />
+    <meta property="og:image" content="http://www.moonsmanga.com/favicon.png" />
     <link rel="shortcut icon" type="image/png" href="/favicon.png" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Mitr&display=swap" rel="stylesheet">
-
+    <%- header %> 
     <style>
         .card:hover {
             background-size: 120% !important;
@@ -95,7 +121,7 @@
         <div class="row">
             <div class="col-md-8">
                 <h4><b>อัพเดทล่าสุด</b></h4>
-                <div id="update4"></div>
+                <div id="update4">กำลังโหลดข้อมูล</div>
             </div>
             <div class="col-md-4">
                 <h4><b>เป็นที่นิยม</b></h4>
@@ -264,7 +290,7 @@
                 style="text-decoration: none;color:#1ba0e2;">ดูทั้งหมด</a>
         </div>
         <div style="clear:both;"></div>
-        <div id="updateall"></div>
+        <div id="updateall">กำลังโหลดข้อมูล</div>
     </div>
 
 
@@ -336,6 +362,8 @@
 
     </script>
     <%- include('include/footer') %>
+    <%- footer %> 
+
 </body>
 
 </html>
