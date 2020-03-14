@@ -9,7 +9,7 @@
     <meta content="Thailand" name="geo.placename" />
     <link rel="alternate" href="https://www.moonsmanga.com/" hreflang="th" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> มังงะ <%= title %> อ่าน แปลไทย - MoonManga เว็บอ่านมังงะ ฟรี แปลไทย ครบทุกตอน อ่านการ์ตูน</title>
+    <title> มังงะ <%= title %> อ่าน แปลไทย - MoonsManga เว็บอ่านมังงะ ฟรี แปลไทย ครบทุกตอน อ่านการ์ตูน</title>
     <meta name="description" content="moonsmanga เว็บอ่านการ์ตูนออนไลน์ อ่านมังงะ <%= des.substr(0,200) %> ">
     <meta name="keywords"
         content="อ่านการ์ตูน <%= title %>, เว็บอ่านการ์ตูน <%= title %>, มังงะ <%= title %>, มังงะแปลไทย <%= title %>,manga <%= title %>,อ่านการ์ตูนออนไลน์ <%= title %>, แอพอ่านการ์ตูน, มือถือ,อ่านโทรศัพย์ <%= title %>, อ่านการ์ตูน,มังฮวา,อ่าน <%= title %>,<%= title %>">
@@ -25,7 +25,7 @@
     <meta property="fb:app_id" content="153313228407799" />
 
     <meta property="og:title"
-        content="มังงะ <%= title %> อ่าน แปลไทย - MoonManga เว็บอ่านมังงะ ฟรี แปลไทย ครบทุกตอน อ่านการ์ตูน" />
+        content="มังงะ <%= title %> อ่าน แปลไทย - MoonsManga เว็บอ่านมังงะ ฟรี แปลไทย ครบทุกตอน อ่านการ์ตูน" />
     <meta property="og:description" content="moonsmanga เว็บอ่านการ์ตูนออนไลน์ อ่านมังงะ <%= des.substr(0,200) %> "" />
     <meta property=" og:image" content="http://www.moonsmanga.com/favicon.png" />
     <link rel="shortcut icon" type="image/png" href="/favicon.png" />
@@ -33,7 +33,7 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Mitr&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/js/all.min.js"></script>
-    <%- header %> 
+    <%- header %>
 
     <style>
         .card:hover {
@@ -293,6 +293,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/tags">หมวดหมู่</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/manga/top">คนอ่านมากที่สุด</a>
+                        </li>
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
                         <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -400,8 +403,8 @@
                         <br>
                         <!-- Sharingbutton Facebook -->
                         <a class="resp-sharing-button__link"
-                            href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmoonsmanga.com/manga/<%= title %>" target="_blank"
-                            rel="noopener" aria-label="Facebook">
+                            href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fmoonsmanga.com/manga/<%= title %>"
+                            target="_blank" rel="noopener" aria-label="Facebook">
                             <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--medium">
                                 <div aria-hidden="true"
                                     class="resp-sharing-button__icon resp-sharing-button__icon--solid">
@@ -479,7 +482,8 @@
                     <div class="col-md-2">
                         <a href="" style="text-decoration: none;">
                             <div class="boxep" style="">
-                                <center>กำลังโหลดข้อมูล</center>
+                                <center>กำลังโหลดข้อมูล หารอนานเกินไป กรุณา รีโหลด น่าเว็บนี้ใหม่ หรือ ติดต่อ admin
+                                </center>
                             </div>
                         </a>
                     </div>
@@ -649,7 +653,7 @@
 
 
     <%- include('include/footer') %>
-    <%- footer %> 
+    <%- footer %>
 
 </body>
 
