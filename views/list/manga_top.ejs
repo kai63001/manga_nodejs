@@ -9,14 +9,14 @@
     <meta content="Thailand" name="geo.placename" />
     <link rel="alternate" href="https://www.moonsmanga.com/" hreflang="th" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายการที่คนอ่านมากที่สุด | MoonsManga เว็บอ่านมังงะ ฟรี แปลไทย ครบทุกตอน อ่านการ์ตูน</title>
+    <title>รายการที่คนอ่านมากที่สุด | MoonsManga อ่านการ์ตูน</title>
     <meta name="description"
-        content="แท็ก Tags รายการที่คนอ่านมากที่สุด  moonsmanga เว็บอ่านการ์ตูนออนไลน์ อ่านมังงะ manga แปลไทย มือถือ แอพอ่านการ์ตูน android ios iphone ipad การ์ตูนอัพเดทใหม่ทุกวัน มังฮวา">
+        content="แท็ก Tags รายการที่คนอ่านมากที่สุด   อ่านมังงะ manga แปลไทย มือถือ แอพอ่านการ์ตูน android ios iphone ipad การ์ตูนอัพเดทใหม่ทุกวัน มังฮวา">
     <meta name="keywords"
         content="รายการที่คนอ่านมากที่สุด ,อ่านการ์ตูน รายการที่คนอ่านมากที่สุด , เว็บอ่านการ์ตูน รายการที่คนอ่านมากที่สุด , มังงะ รายการที่คนอ่านมากที่สุด , มังงะแปลไทย,manga รายการที่คนอ่านมากที่สุด ,อ่านการ์ตูนออนไลน์, แอพอ่านการ์ตูน, มือถือ,อ่านโทรศัพย์, อ่านการ์ตูน,มังฮวา ">
-    <link rel="icon" href="https://www.moonsmanga.com/views/views/favicon.ico">
-    <link rel="apple-touch-icon" href="https://www.moonsmanga.com/views/views/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" href="https://www.moonsmanga.com/views/views/favicon.ico">
+    <link rel="icon" href="http://www.moonsmanga.com/favicon.png">
+    <link rel="apple-touch-icon" href="http://www.moonsmanga.com/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="http://www.moonsmanga.com/favicon.png">
 
     <meta name="robots" content="noodp,noydir,index,follow,noarchive" />
     <meta property="og:locale" content="th_TH" />
@@ -28,7 +28,7 @@
     <meta property="og:title"
         content="อ่านการ์ตูน เว็บอ่านการ์ตูน อ่านการ์ตูนออนไลน์ อ่านมังงะ manga แปลไทย - moonsmanga.com" />
     <meta property="og:description"
-        content="MoonsManga เว็บอ่านการ์ตูนออนไลน์ อ่านมังงะ manga แปลไทย app แอพอ่านการ์ตูน android ios iphone ipad การ์ตูนอัพเดทใหม่ทุกวัน" />
+        content=" อ่านมังงะ manga แปลไทย app แอพอ่านการ์ตูน android ios iphone ipad การ์ตูนอัพเดทใหม่ทุกวัน" />
     <meta property="og:url" content="https://www.moonsmanga.com/" />
     <meta property="og:image" content="http://www.moonsmanga.com/favicon.png" />
     <link rel="shortcut icon" type="image/png" href="/favicon.png" />
@@ -92,10 +92,11 @@
 <body style="font-family: 'Mitr' !important;">
     <%- include('../include/nav_index') %>
     <div class="container">
+        <h1>รายการที่มีคนอ่านมากที่สุด</h1>
         <div class="row">
             <% for( let i = 0; i < tags.length; i++ ) { %>
             <div class="col-md-2 col-6" style="padding-right: 0px;">
-                <a href="/manga/<%= tags[i].md_url.replace('/cumanga.com/manga-',''); %>"
+                <a title="<%= tags[i].md_name %>" href="/manga/<%= tags[i].md_url.replace('/cumanga.com/manga-',''); %>"
                     style="text-decoration: none;color: #130C11;">
                     <% if (tags[i].md_image != '') { %>
                     <div class="card"

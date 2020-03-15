@@ -9,7 +9,11 @@ const SitemapGenerator = require('sitemap-generator');
 const path = require("path");
 const bodyParser = require('body-parser')
 const port = 3000;
-const expressSitemapXml = require('express-sitemap-xml')
+const robots = require('express-robots-txt');
+const translate = require('google-translate-open-api').default;
+
+
+
 
 
 var con = mysql.createConnection({
@@ -26,6 +30,7 @@ var con = mysql.createConnection({
 //     database: "maloithd_manga"
 //   });
 
+
 con.connect();
 
 var header = '';
@@ -33,6 +38,9 @@ var footer = '';
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
+app.use(robots({ UserAgent: '*', CrawlDelay: '5', Sitemap: 'https://257782cf.ngrok.io/sitemap.xml' }))
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -279,7 +287,7 @@ app.get('/manga/page/:page', function (reqer, reser) {
                         url[i] = $('.col-6').eq(i).attr("href");
                         lastPage = $('select').eq(0).children().length;
                     }
-                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage, header: header, footer: footer });
+                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage, header: header, footer: footer, nowPage: page });
                 } catch (error) {
                     console.log(error);
                 }
@@ -301,7 +309,7 @@ app.get('/manga/page/:page', function (reqer, reser) {
                     }
 
                     console.log(name);
-                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage, header: header, footer: footer });
+                    reser.render('list/manga_update', { name: name, image: image, ep: ep, url: url, lastPage: lastPage, header: header, footer: footer, nowPage: page });
                 } catch (error) {
                     console.log(error);
                 }
@@ -413,39 +421,41 @@ app.get('/manga/:name', function (reqer, reser) {
                                             des = $(".text-light").eq(3).text();
                                             year = $(".text-light").eq(2).text();
                                             status = $(".text-light").eq(1).text();
-                                            // console.log('https://www.anime-planet.com/manga/all?name='+title);
+                                            // console.log('https://www.anime-planet.com/manga/'+title);
                                             var titleed = title.replace(/ /g, '+');
-
-                                            request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
+                                            request('https://www.anime-planet.com/manga/' + title.replace(/ /g, '-').toLocaleLowerCase(), function (errorqqq, reqqq, htmler) {
                                                 try {
                                                     if (!errorqqq & reqqq.statusCode == 200) {
                                                         try {
                                                             var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
                                                             htmled = htmled.substr(0, htmled.indexOf('myListBar'));
                                                             var $s = cheerio.load(htmled);
-                                                            if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
+                                                            if (htmler.indexOf('User Stats') >= 0) {
+                                                                console.log('111111');
+                                                                console.log('https://www.anime-planet.com/manga/' + title.replace(/ /g, '-'));
+
                                                                 $s('a').each(function (i, elem) {
                                                                     tags[i] = $s(this).text().replace(/\n/g, '');
                                                                 });
                                                                 console.log(tags);
-                                                                con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (err, res) {
+                                                                con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des.replace(/"/, '') + '","' + image + '","' + title + '")', function (err, res) {
                                                                 });
                                                                 reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
 
                                                             } else {
-                                                                titleed = titleed.substr(0, titleed.length / 3);
-                                                                request('https://www.anime-planet.com/manga/all?name=' + titleed, function (errorqqq, reqqq, htmler) {
+                                                                console.log('else 2');
+                                                                request('https://www.anime-planet.com/manga/all?name=' + titleed +'&exclude_tags=334', function (errorqqq, reqqq, htmler) {
                                                                     if (!errorqqq & reqqq.statusCode == 200) {
                                                                         var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
                                                                         htmled = htmled.substr(0, htmled.indexOf('myListBar'));
                                                                         var $s = cheerio.load(htmled);
-                                                                        if (htmler.indexOf('<h4>Tags</h4>') >= 0) {
+                                                                        if (htmler.indexOf('User Stats') >= 0) {
                                                                             $s('a').each(function (i, elem) {
                                                                                 tags[i] = $s(this).text().replace(/\n/g, '');
                                                                             });
                                                                             console.log('asdasdasdasdasdas');
                                                                             console.log(tags);
-                                                                            con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
+                                                                            con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des.replace(/"/, '') + '","' + image + '","' + title + '")', function (serr, sres) {
                                                                                 if (sres) {
                                                                                     reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
                                                                                 }
@@ -454,13 +464,39 @@ app.get('/manga/:name', function (reqer, reser) {
                                                                                 }
                                                                             });
                                                                         } else {
-                                                                            console.log('asdasdasdasdasdas2');
-                                                                            con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des + '","' + image + '","' + title + '")', function (serr, sres) {
-                                                                                if (sres) {
-                                                                                    reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
-                                                                                }
-                                                                                if (serr) {
-                                                                                    console.log(serr);
+                                                                            titleed = titleed.substr(0, titleed.length / 3);
+                                                                            request('https://www.anime-planet.com/manga/all?name=' + titleed +'&exclude_tags=334', function (errorqqq, reqqq, htmler) {
+                                                                                if (!errorqqq & reqqq.statusCode == 200) {
+                                                                                    var htmled = htmler.substr(htmler.indexOf('<h4>Tags</h4>'), htmler.indexOf('display status0'));
+                                                                                    htmled = htmled.substr(0, htmled.indexOf('myListBar'));
+                                                                                    var $s = cheerio.load(htmled);
+                                                                                    if (htmler.indexOf('User Stats') >= 0) {
+                                                                                        $s('a').each(function (i, elem) {
+                                                                                            tags[i] = $s(this).text().replace(/\n/g, '');
+                                                                                        });
+                                                                                        console.log('asdasdasdasdasdas');
+                                                                                        console.log(tags);
+                                                                                        con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des.replace(/"/, '') + '","' + image + '","' + title + '")', function (serr, sres) {
+                                                                                            if (sres) {
+                                                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
+                                                                                            }
+                                                                                            if (serr) {
+                                                                                                console.log(serr);
+                                                                                            }
+                                                                                        });
+                                                                                    } else {
+                                                                                        console.log('asdasdasdasdasdas2');
+                                                                                        con.query('insert into manga_detail (md_url,md_status,md_year,md_view,md_tags,md_des,md_image,md_name) values ("' + reqer.params.name + '","' + status + '","' + year + '","' + view + '","' + tags + '","' + des.replace(/"/, '') + '","' + image + '","' + title + '")', function (serr, sres) {
+                                                                                            if (sres) {
+                                                                                                reser.render('manga_detail', { name: reqer.params.name, image: image, title: title, des: des, tags: tags, view: view, year: year, status: status, session: reqer.session, follow: follow, like: like, header: header, footer: footer });
+                                                                                            }
+                                                                                            if (serr) {
+                                                                                                console.log(serr);
+                                                                                            }
+                                                                                        });
+
+
+                                                                                    }
                                                                                 }
                                                                             });
 
@@ -468,6 +504,7 @@ app.get('/manga/:name', function (reqer, reser) {
                                                                         }
                                                                     }
                                                                 });
+
                                                             }
                                                         } catch (errorqqq) {
                                                             console.log(errorqqq);
@@ -637,6 +674,89 @@ app.get('/_moonlightshadow', async function (req, res) {
 });
 
 // AJAX 
+async function translatetothai(text, url) {
+    const result = await translate(text, {
+        tld: "cn",
+        to: "th",
+    });
+    const data = result.data[0];
+    console.log(data);
+    con.query("UPDATE manga_detail SET md_des = ? WHERE md_url = ?", [data, url], (erorr, reqers) => {
+        console.log('update Success translate');
+    });
+}
+
+
+
+app.get('/ajax/detail/transplate/:name', async function (reqer, reser) {
+    var titleed = reqer.params.name.replace(/-/g, '+');
+    console.log('ssssss');
+    request('https://www.anime-planet.com/manga/' + reqer.params.name.toLocaleLowerCase(), function (errorqqq, reqqq, htmler) {
+        try {
+            if (!errorqqq & reqqq.statusCode == 200) {
+                try {
+                    var htmled = htmler.substr(htmler.indexOf('<div class="pure-1 md-3-5">'), htmler.indexOf('display status0'));
+                    htmled = htmled.substr(0, htmled.indexOf('<div class="tags ">'));
+                    var $s = cheerio.load(htmled);
+                    if (htmler.indexOf('User Stats') >= 0) {
+                        console.log('111111');
+                        var deser = $s('p').text();
+                        console.log("des1 : " + deser);
+                        translatetothai(deser, reqer.params.name);
+                        reser.send('success');
+
+                    } else {
+                        console.log('else 2');
+                        request('https://www.anime-planet.com/manga/all?name=' + titleed +'&exclude_tags=334', function (errorqqq, reqqq, htmler) {
+                            if (!errorqqq & reqqq.statusCode == 200) {
+                                var htmled = htmler.substr(htmler.indexOf('<div class="pure-1 md-3-5">'), htmler.indexOf('display status0'));
+                                htmled = htmled.substr(0, htmled.indexOf('<div class="tags ">'));
+                                var $s = cheerio.load(htmled);
+                                if (htmler.indexOf('User Stats') >= 0) {
+                                    var deser = $s('p').text();
+                                    console.log("des2 : " + deser);
+                                    translatetothai(deser, reqer.params.name);
+                                    reser.send('success');
+                                } else {
+                                    titleed = titleed.substr(0, titleed.length / 3);
+                                    request('https://www.anime-planet.com/manga/all?name=' + titleed +'&exclude_tags=334', function (errorqqq, reqqq, htmler) {
+                                        if (!errorqqq & reqqq.statusCode == 200) {
+                                            var htmled = htmler.substr(htmler.indexOf('<div class="pure-1 md-3-5">'), htmler.indexOf('display status0'));
+                                            htmled = htmled.substr(0, htmled.indexOf('<div class="tags ">'));
+                                            var $s = cheerio.load(htmled);
+                                            if (htmler.indexOf('User Stats') >= 0) {
+                                                var deser = $s('p').text();
+                                                console.log("des3 : " + deser);
+                                                translatetothai(deser, reqer.params.name);
+                                                reser.send('success');
+                                            } else {
+                                                var deser = $s('p').text();
+                                                console.log("des4 : " + deser);
+                                                translatetothai(deser, reqer.params.name);
+                                                reser.send('success');
+                                            }
+                                        }
+                                    });
+
+
+                                }
+                            }
+                        });
+
+                    }
+                } catch (errorqqq) {
+                    console.log(errorqqq);
+                }
+            }
+        } catch (error) {
+
+        }
+
+    });
+
+
+});
+
 app.post('/ajax/admin/sends', async function (req, res) {
     if (req.session.admin != undefined) {
         console.log(req.body.s_header);
@@ -779,8 +899,12 @@ app.get('/ajax/detail/allep/:name/:nowep', async function (reqed, reser) {
                     console.log("countPage :" + countPage);
                     var loops = 1;
                     if (countPage > 1) {
-                        for (var d = 0; d < countPage + 1; d++) {
-                            if (d != 1) {
+                        for (var d = 1; d < countPage + 1; d++) {
+                            var link = 'https://cumanga.com/manga-' + reqed.params.name + '/page-' + d + '/';
+                            if (d == 1) {
+                                link = 'https://cumanga.com/manga-' + reqed.params.name + '/';
+                            }
+                            if (d != 0) {
                                 request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + d + '/', function (error, req, html) {
                                     if (!error & req.statusCode == 200) {
                                         var $ = cheerio.load(html);
@@ -848,9 +972,13 @@ app.get('/ajax/detail/ep/:name', function (reqed, reser) {
             console.log("countPage :" + countPage);
             if (countPage > 1) {
                 var listd = [];
-                for (var d = 0; d < countPage + 1; d++) {
-                    if (d != 1) {
-                        request('https://cumanga.com/manga-' + reqed.params.name + '/page-' + d + '/', function (error, req, html) {
+                for (var d = 1; d < countPage + 1; d++) {
+                    var link = 'https://cumanga.com/manga-' + reqed.params.name + '/page-' + d + '/';
+                    if (d == 1) {
+                        link = 'https://cumanga.com/manga-' + reqed.params.name + '/';
+                    }
+                    if (d != 0) {
+                        request(link, function (error, req, html) {
                             console.log('d = ' + d);
                             loops += 1;
                             if (!error & req.statusCode == 200) {
@@ -953,7 +1081,7 @@ app.get('/ajax/index/updateall', async function (req, reser) {
 
 app.get('/sitemap_get', function (req, res) {
     // create generator
-    var generator = SitemapGenerator('https://0ac4290f.ngrok.io', {
+    var generator = SitemapGenerator('https://257782cf.ngrok.io', {
         maxDepth: 0,
         maxEntriesPerFile: 50000,
         stripQuerystring: true

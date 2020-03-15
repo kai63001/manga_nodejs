@@ -6,26 +6,26 @@
         <% if (session.watchep[name.toString()]) { %>
         <% if (session.watchep[name.toString()][ep[i].toString()] == 1) { %>
         <div class="col-md-2" style="padding-bottom:15px;">
-            <a href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
+            <a title="อ่าน <%= name.replace(/-/g,' '); %> ตอนที่ <%= ep[i] %> " href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
                 <div class="boxep" style="background-color: #1ba0e2;border-color: #1ba0e2;color: white;">
-                    <center> <i class="fas fa-check"></i> ตอนที่ <%= ep[i] %> </center>
+                    <div style="text-align: center;"> <i class="fas fa-check"></i> ตอนที่ <%= ep[i] %> </div>
                 </div>
             </a>
         </div>
         <% }else{ %>
         <div class="col-md-2" style="padding-bottom:15px;">
-            <a href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
+            <a title="อ่าน <%= name.replace(/-/g,' '); %> ตอนที่ <%= ep[i] %> " href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
                 <div class="boxep" style="">
-                    <center> ตอนที่ <%= ep[i] %> </center>
+                    <div style="text-align: center;"> ตอนที่ <%= ep[i] %> </div>
                 </div>
             </a>
         </div>
         <% } %>
         <% }else{ %>
         <div class="col-md-2" style="padding-bottom:15px;">
-            <a href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
+            <a title="อ่าน <%= name.replace(/-/g,' '); %> ตอนที่ <%= ep[i] %> " href="/manga/<%= name %>/read/<%= ep[i] %>" style="text-decoration: none;">
                 <div class="boxep" style="">
-                    <center> ตอนที่ <%= ep[i] %> </center>
+                    <div style="text-align: center;"> ตอนที่ <%= ep[i] %> </div>
                 </div>
             </a>
         </div>
