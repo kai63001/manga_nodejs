@@ -9,7 +9,7 @@
     <meta content="Thailand" name="geo.placename" />
     <link rel="alternate" href="https://www.moonsmanga.com/" hreflang="th" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> มังงะ <%= title %> อ่าน แปลไทย - MoonsManga อ่านการ์ตูน</title>
+    <title> มังงะ <%= title %> อ่าน - MoonsManga อ่านการ์ตูน</title>
     <meta name="description" content="อ่าน <%= title %> อ่านมังงะ <%= des.substr(0,150) %> <%= title %> ตอนที่">
     <meta name="keywords"
         content="อ่านการ์ตูน <%= title %>, เว็บอ่านการ์ตูน <%= title %>, มังงะ <%= title %>, มังงะแปลไทย <%= title %>,manga <%= title %>,อ่านการ์ตูนออนไลน์ <%= title %>, แอพอ่านการ์ตูน, มือถือ,อ่านโทรศัพย์ <%= title %>, อ่านการ์ตูน,มังฮวา,อ่าน <%= title %>,<%= title %>">
@@ -22,7 +22,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="www.moonsmanga.com" />
     <meta property="article:publisher" content="https://www.facebook.com/box.manga.page" />
-    <meta property="fb:app_id" content="153313228407799" />
+    <meta property="fb:app_id" content="205878997302744" />
 
     <meta property="og:title" content="มังงะ <%= title %> อ่าน แปลไทย - MoonsManga อ่านการ์ตูน" />
     <meta property="og:description" content=" อ่านมังงะ <%= des.substr(0,200) %> "" />
@@ -296,8 +296,9 @@
                             <a class="nav-link" href="/manga/top">คนอ่านมากที่สุด</a>
                         </li>
                     </ul>
-                    <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <form class="form-inline my-2 my-lg-0" action='/search'>
+                        <input class="form-control mr-sm-2" name="s" type="search" placeholder="Search"
+                            aria-label="Search">
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit"
                             style="border-color: #1ba0e2;color: #1ba0e2;">Search</button>
                     </form>
@@ -408,7 +409,7 @@
                         <br>
                         <div id="fb-root"></div>
                         <script async defer crossorigin="anonymous"
-                            src="https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v6.0&appId=153313228407799&autoLogAppEvents=1"></script>
+                            src="https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v6.0&appId=205878997302744&autoLogAppEvents=1"></script>
                         <div class="fb-share-button" data-href="https://moonsmanga.com/manga/<%= title %>"
                             data-layout="button_count" data-size="large"><a target="_blank"
                                 href="https://moonsmanga.com/manga/<%= title %>" class="fb-xfbml-parse-ignore">แชร์</a>
@@ -452,7 +453,7 @@
     <div class="container">
         <div id="fb-root"></div>
         <script async defer crossorigin="anonymous"
-            src="https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v6.0&appId=153313228407799&autoLogAppEvents=1"></script>
+            src="https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v6.0&appId=205878997302744&autoLogAppEvents=1"></script>
         <div class="fb-like" data-href="https://moonsmanga.com/manga/<%= name %>" data-width="" data-layout="standard"
             data-action="like" data-size="large" data-share="true"></div>
     </div>
@@ -461,7 +462,7 @@
     <div class="container">
         <div id="fb-root"></div>
         <script async defer crossorigin="anonymous"
-            src="https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v6.0&appId=153313228407799&autoLogAppEvents=1"></script>
+            src="https://connect.facebook.net/th_TH/sdk.js#xfbml=1&version=v6.0&appId=205878997302744&autoLogAppEvents=1"></script>
         <div class="fb-comments" data-href="https://moonsmanga.com/manga/<%= name %>" data-width="100%"
             data-numposts="7"></div>
     </div>
