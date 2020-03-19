@@ -12,21 +12,21 @@ const port = 3000;
 const robots = require('express-robots-txt');
 const translate = require('google-translate-open-api').default;
 var { FB, FacebookApiException } = require('fb');
-var moonurl = 'https://1bec2a6b.ngrok.io/';
-
-var con = mysql.createConnection({
-    host: "192.168.64.2",
-    user: "romeo",
-    password: "qw123456",
-    database: "manga"
-});
+var moonurl = 'https://www.moonsmanga.com/';
 
 // var con = mysql.createConnection({
-//     host: "localhost",
-//     user: "maloithd",
-//     password: "1Pra9nWapgz3",
-//     database: "maloithd_manga"
-//   });
+//     host: "192.168.64.2",
+//     user: "romeo",
+//     password: "qw123456",
+//     database: "manga"
+// });
+
+var con = mysql.createConnection({
+    host: "localhost",
+    user: "moonbpez",
+    password: "9XTI0XlmQwc2",
+    database: "moonbpez_manga"
+  });
 
 
 
@@ -70,7 +70,7 @@ function getFacebookPostData() {
                             facebookPost(
                                 $('.doujin_name').eq(d).text(),//name
                                 $('.doujin_t_red').eq(d).text(),//ep
-                                $('.col-6').eq(d).attr("href").replace('//cumanga.com/manga-', moonurl + "/manga/" + "/read/" + $('.doujin_t_red').eq(d).text()),//url
+                                $('.col-6').eq(d).attr("href").replace('//cumanga.com/manga-', moonurl + "manga/"),//url
                                 one.substr(1, one.indexOf("')") - 1)//image
                             );
                             d += 1;
@@ -99,7 +99,7 @@ setInterval(() => {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-app.use(robots({ UserAgent: '*', CrawlDelay: '5', Sitemap: 'https://1bec2a6b.ngrok.io/sitemap.xml' }))
+app.use(robots({ UserAgent: '*', CrawlDelay: '5', Sitemap: 'https://moonsmanga.com/sitemap.xml' }))
 
 
 app.use(express.json());
@@ -178,7 +178,7 @@ con.query("SELECT * FROM setting WHERE s_id = '1'", function (error, res) {
 function generate_xml_sitemap(urls, ep_urls) {
 
 
-    var root_path = 'https://0ac4290f.ngrok.io/';
+    var root_path = 'https://moonsmanga.com/';
     var priority = 0.5;
     var freq = 'monthly';
     var xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -342,6 +342,7 @@ app.get('/manga/page/:page', function (reqer, reser) {
                     for (var i = 0; i < $("style").length; i++) {
                         var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
                         image[i] = one.substr(1, one.indexOf("')") - 1);
+                        image[i] = image[i].replace(/http:/,'https:');
                         name[i] = $(".doujin_name").eq(i).text();
                         ep[i] = $('.doujin_t_red').eq(i).text();
                         url[i] = $('.col-6').eq(i).attr("href");
@@ -362,6 +363,7 @@ app.get('/manga/page/:page', function (reqer, reser) {
                     for (var i = 0; i < $("style").length; i++) {
                         var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
                         image[i] = one.substr(1, one.indexOf("')") - 1);
+                        image[i] = image[i].replace(/http:/,'https:');
                         name[i] = $(".doujin_name").eq(i).text();
                         ep[i] = $('.doujin_t_red').eq(i).text();
                         url[i] = $('.col-6').eq(i).attr("href");
@@ -747,6 +749,14 @@ app.get('/_moonlightshadow', async function (req, res) {
     }
 });
 
+app.get('/_moonlightshadow/report', (reqer, reser) => {
+    con.query("SELECT * FROM report ORDER BY r_id DESC", (error, req) => {
+        if (!error) {
+            reser.render('admin/report', { req: req, header: header, footer: footer });
+        }
+    });
+});
+
 // AJAX 
 async function translatetothai(text, url) {
     const result = await translate(text, {
@@ -1119,6 +1129,7 @@ app.get('/ajax/index/update', async function (req, reser) {
             for (var i = 0; i < 4; i++) {
                 var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
                 image[i] = one.substr(1, one.indexOf("')") - 1);
+                image[i] = image[i].replace(/http:/,'https:');
                 name[i] = $(".doujin_name").eq(i).text();
                 ep[i] = $('.doujin_t_red').eq(i).text();
                 url[i] = $('.col-6').eq(i).attr("href");
@@ -1142,6 +1153,7 @@ app.get('/ajax/index/updateall', async function (req, reser) {
             for (var i = 0; i < $("style").length; i++) {
                 var one = ($("style").eq(i).html().substr($("style").eq(i).html().indexOf("'"), $("style").eq(i).html().length));
                 image[i] = one.substr(1, one.indexOf("')") - 1);
+                image[i] = image[i].replace(/http:/,'https:');
                 name[i] = $(".doujin_name").eq(i).text();
                 ep[i] = $('.doujin_t_red').eq(i).text();
                 url[i] = $('.col-6').eq(i).attr("href");
@@ -1153,23 +1165,23 @@ app.get('/ajax/index/updateall', async function (req, reser) {
     }
 });
 
-app.get('/sitemap_get', function (req, res) {
-    // create generator
-    var generator = SitemapGenerator('https://1bec2a6b.ngrok.io', {
-        maxDepth: 0,
-        maxEntriesPerFile: 50000,
-        stripQuerystring: true
-    });
+// app.get('/sitemap_get', function (req, res) {
+//     // create generator
+//     var generator = SitemapGenerator('https://moonsmanga.com/', {
+//         maxDepth: 0,
+//         maxEntriesPerFile: 50000,
+//         stripQuerystring: true
+//     });
 
-    // register event listeners
-    generator.on('done', () => {
-        console.log('finish');
-        res.send('finsish');
-    });
+//     // register event listeners
+//     generator.on('done', () => {
+//         console.log('finish');
+//         res.send('finsish');
+//     });
 
-    // start the crawler
-    generator.start();
-})
+//     // start the crawler
+//     generator.start();
+// });
 
 app.get('*', function (req, res) {
     res.status(404).render('404');
